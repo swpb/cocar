@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Controller;
+namespace Swpb\Bundle\CocarBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-use GerenciadorRedes\Bundle\CocarBundle\Controller\SnmpController;
+use Swpb\Bundle\CocarBundle\Controller\SnmpController;
 
 class SnmpWebController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Controller;
+namespace Swpb\Bundle\CocarBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-use GerenciadorRedes\Bundle\CocarBundle\Entity\Reliability;
+use Swpb\Bundle\CocarBundle\Entity\Reliability;
 
 class ReliabilityController extends Controller
 {
