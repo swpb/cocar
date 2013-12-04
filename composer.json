@@ -9,7 +9,7 @@
     },
     "target-dir": "GerenciadorRedes/Bundle/CocarBundle",
     "require": {
-	"jpgraph/jpgraph": "dev-master",
+	"jpgraph/jpgraph": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
