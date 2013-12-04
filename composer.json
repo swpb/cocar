@@ -5,10 +5,11 @@
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-	"psr-0": { "GerenciadorRedes\\Bundle\\CocarBundle": "" }
+	"psr-0": { "swpb\\Bundle\\CocarBundle": "" }
     },
-    "target-dir": "GerenciadorRedes/Bundle/CocarBundle",
+    "target-dir": "swpb/Bundle/CocarBundle",
     "require": {
+        "php": ">=5.3.2",
 	"jpgraph/jpgraph": "dev-master"
     },
     "scripts": {
@@ -38,7 +39,7 @@
             "file": "app/config/parameters.yml"
         },
         "branch-alias": {
-            "dev-master": "2.3-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
