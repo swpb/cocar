@@ -9,14 +9,7 @@
     },
     "target-dir": "GerenciadorRedes/Bundle/CocarBundle",
     "require": {
-        "jms/security-extra-bundle": "1.4.*",
-        "jms/di-extra-bundle": "1.3.*",
 	"jpgraph/jpgraph": "dev-master",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "friendsofsymfony/rest-bundle": "dev-master",
-        "jms/serializer": "0.14.*@dev",
-        "jms/serializer-bundle": "0.13.*@dev",
-        "knplabs/knp-paginator-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
