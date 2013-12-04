@@ -1,0 +1,11 @@
+{% extends '::base.html.twig' %}
+
+{% block title 'Cocar' %}
+
+{% block stylesheets %}
+	{% stylesheets filter='cssrewrite'
+		'bundles/cocar/css/*'
+	%}
+		<link rel="stylesheet" href="{{ asset_url }}" />
+	{% endstylesheets %}
+{% endblock %}

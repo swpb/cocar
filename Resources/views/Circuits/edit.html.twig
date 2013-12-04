@@ -1,0 +1,110 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2>{{ entity.description }}</h2>
+
+    <form action="{{ path('circuits_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+        <input type="hidden" name="_method" value="PUT" />
+        <table class="records_list" border=0 cellspacing=2 cellpadding=2>
+                <tr>
+                    {{ form_errors(edit_form) }}
+
+                    <th> Código da Interface: </th>
+                    <td> {{ form_widget(edit_form.codeInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> Descrição do circuito: </th>
+                    <td> {{ form_widget(edit_form.description) }} </td>
+                </tr>
+                <tr>
+                    <th> Entidade: </th>
+                    <td> {{ form_widget(edit_form.entity) }} </td>
+                </tr>
+                <tr>
+                    <th> Gerencia: </th>
+                    <td> {{ form_widget(edit_form.manages) }} </td>
+                </tr>
+                <tr>
+                    <th>IP roteador backbone: </th>
+                    <td> {{ form_widget(edit_form.ipBackbone) }} </td>
+                </tr>
+                <tr>
+                    <th> Community snmp do roteador backbone: </th>
+                    <td> {{ form_widget(edit_form.communitySnmpBackbone) }} </td>
+                </tr>
+                <tr>
+                    <th> Serial no roteador backbone: </th>
+                    <td> {{ form_widget(edit_form.serialBackbone) }} </td>
+                </tr>
+                <tr>
+                    <th> Tecnologia: </th>
+                    <td> {{ form_widget(edit_form.technology) }} </th>
+                </tr>
+                <tr>
+                    <th> Tipo da Interface: </th>
+                    <td> {{ form_widget(edit_form.typeInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> Número SNMP da interface: </th>
+                    <td> {{ form_widget(edit_form.numSnmpInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> IP da serial da Interface: </th>
+                    <td> {{ form_widget(edit_form.ipSerialInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> Cadastro do circuito: </th>
+                    <td> {{ form_widget(edit_form.registerCircuit) }} </td>
+                </tr>
+                <tr>
+                    <th> Velocidade: </th>
+                    <td> {{ form_widget(edit_form.speed) }} </td>
+                </tr>
+                <tr>
+                    <th> CIR In: </th>
+                    <td> {{ form_widget(edit_form.cirIn) }} </td>
+                </tr>
+                <tr>
+                    <th> CIR Out: </th>
+                    <td> {{ form_widget(edit_form.cirOut) }} </td>
+                </tr>
+                <tr>
+                    <th> Serial no roteador da ponta: </th>
+                    <td> {{ form_widget(edit_form.serialRouterTip) }} </td>
+                </tr>
+                <tr>
+                    <th> Identificação SNMP da porta na ponta: </th>
+                    <td> {{ form_widget(edit_form.snmpPortTip) }} </td>
+                </tr>
+                <tr>
+                    <th> Community SNMP do roteador da ponta: </th>
+                    <td> {{ form_widget(edit_form.communitySnmpRouterTip) }} </td>
+                </tr>
+                <tr>
+                    <th> IP da serial do roteador da ponta: </th>
+                    <td> {{ form_widget(edit_form.ipSerialRouterTip) }} </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button type="submit">Editar</button>
+                    </td>
+                </tr>
+            </table>
+            {{ form_widget(edit_form._token) }}
+    </form>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('circuits') }}">
+            Lista de Circuitos
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('circuits_delete', { 'id': entity.id }) }}" method="post">
+            <input type="hidden" name="_method" value="DELETE" />
+            {{ form_widget(delete_form) }}
+            <button type="submit">Deletar</button>
+        </form>
+    </li>
+</ul>
+{% endblock %}

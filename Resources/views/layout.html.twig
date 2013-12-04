@@ -1,0 +1,127 @@
+{% extends 'CocarBundle::base.html.twig' %}
+
+{% block body -%}
+  <table border="0" width="100%" bgcolor="#CCCC99" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="350" CLASS="sys"><b><i>COCAR: Controlador Centralizado do Ambiente de Rede</i></b></td>
+      <td align="right" height="22" width="30%">
+		  	<b><font face="Verdana" color='#000000' size="1">
+				<script>
+					var now = new Date();
+					var mName = new Array("Janeiro", "Fevereiro", "Mar&ccedil;§o", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro");
+					var dName = new Array("Domingo", "Segunda-feira", "Ter&ccedil;a-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "S&aacute;bado");
+					var dayNr = now.getDate();
+					var Mes = now.getMonth() + 1;
+					var yearNr = now.getYear();
+					var H = now.getHours();
+					var M= now.getMinutes();
+					var S= now.getSeconds();
+
+					if (dayNr < 10) { dayNr = "0" + dayNr }
+					if (Mes < 10) { Mes = "0" + Mes }
+					if (H < 10) { H = "0" + H }
+					if (M < 10) { M = "0" + M }
+					if (yearNr < 2000) { yearNr = 1900 + yearNr }
+
+					document.write( dName[now.getDay()] + ", " + dayNr + "/" + Mes + "/"+ yearNr + " " + H + ":" + M )
+
+					function showHideLayers(id, desc, action) {
+						if(action == 'show')
+					  		document.getElementById(id).innerHTML = desc;
+					  	else
+					  		document.getElementById(id).innerHTML = "";
+					}
+				</script>
+			</font></b>
+	  </td>
+	  <td align="right" height="22" width="20%">
+		<div id="descricao" class="desc"> </div>
+	  </td>
+      <td align="right" class="menu">
+		  	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+                <a HREF="{{ path('cocar_map') }}" target="_top" onmouseover="showHideLayers('descricao','Página Inicial','show')" onmouseout="showHideLayers('descricao','','hide')">
+				{% image '@CocarBundle/Resources/public/images/home.gif' %} 
+                	<img border="0" src="{{ asset_url }}" align="middle"></a>
+                {% endimage %} 
+        	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+			  	<a href="{{ path('entity') }}" onmouseover="showHideLayers('descricao','Entidades','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  	{% image '@CocarBundle/Resources/public/images/entity.png' %} 
+			  		<img border="0" src="{{ asset_url }}" align="middle"></a>
+			  	{% endimage %} 
+        	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+			  	<a href="{{ path('circuits') }}" onmouseover="showHideLayers('descricao','Circuitos','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  	{% image '@CocarBundle/Resources/public/images/circuit.png' %} 
+			  		<img border="0" src="{{ asset_url }}" align="middle"></a>
+			  	{% endimage %}
+        	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+			  	<a href="{{ path('cocar_totalizer') }}" onmouseover="showHideLayers('descricao','Relatórios','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  	{% image '@CocarBundle/Resources/public/images/rel.png' %} 
+			  		<img border="0" src="{{ asset_url }}" align="middle" width="22"></a>
+			  	{% endimage %} 
+        	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+			  	<a href="javascript:contatos();" OnClick="javascript:contatos();"  onmouseover="showHideLayers('descricao','Contato','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  	{% image '@CocarBundle/Resources/public/images/contatos.gif' %} 
+			  		<img border="0" src="{{ asset_url }}" align="middle"></a>
+			  	{% endimage %} 
+			<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+			  	<a href="manual/cocar.pdf"  onmouseover="showHideLayers('descricao','Manual','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  	{% image '@CocarBundle/Resources/public/images/ajuda.gif' %} 
+			  		<img border="0" src="{{ asset_url }}" align="middle"></a>
+			  	{% endimage %} 
+		  	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
+	  </td>
+    </tr>
+  </table>
+  <div class="box">
+	<table width='150' border='0' cellspacing='0' cellpadding='0'>
+		<tr>
+			{% image '@CocarBundle/Resources/public/images/boxverde_e.gif' %} 
+				<td width='1' align='right'><img border='0' src='{{ asset_url }}' width='5' height='25'></td>
+			{% endimage %}
+			{% image '@CocarBundle/Resources/public/images/boxverde_m.gif' %} 
+				<td background='{{ asset_url }}'  align='center' valign='middle' CLASS='thtt'><b>Buscar</b></td>
+			{% endimage %} 
+			{% image '@CocarBundle/Resources/public/images/boxverde_d.gif' %} 
+				<td width='5'><img src='{{ asset_url }}' width='5' height='25'></td>
+			{% endimage %} 
+		</tr>
+	</table>
+
+	<table width='150'  border='0' cellspacing='0' cellpadding='6' CLASS='laterais' bgcolor='#F3FAE9'>
+		<TR>
+			<TD>
+				<table width='100%'  border='0' cellspacing='0' cellpadding='0'>
+					<form name='search' method='post' action='{{ path('cocar_map') }}'>
+						<tr>
+							<td ALIGN='center'>
+								<input name='circuit' type='text' class='caixa' MAXLENGTH='22' VALUE="Buscar por circuito" onfocus="this.value='';">
+							</td>
+							<td align='left' margin-left=20px>
+								{% image '@CocarBundle/Resources/public/images/bt_ok.gif' %} 
+									<input type='image' src='{{ asset_url }}' onClick='' style='cursor:hand;margin-left:5px'>
+								{% endimage %} 
+							</td>
+						</tr>
+					</form>
+				</table>
+			</td>
+		</tr>
+	</table>
+	{% block search %}{% endblock %}
+
+	<table width='140' border='0' cellspacing='0' cellpadding='0'>
+		<tr>
+			<td align='center' valign='middle'>
+				<p align='center'>
+					<font size='2' face='Verdana, Arial, Helvetica, sans-serif'>
+						<B>Digite o Nome da Unidade desejada.</B>
+					</font>
+				</p>
+			</td>
+		</tr>
+	</table>
+  </div>
+  <div class="main">
+		{% block main %}{% endblock %}
+  </div>
+{% endblock %}

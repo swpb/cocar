@@ -1,0 +1,80 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main %}
+
+	<DIV ALIGN="left" style="margin-top:20px">
+		<FONT FACE="Verdana" SIZE="" COLOR="#004000">
+			<B>Rede de Acesso - Performance dos Circuitos</B>
+		</FONT>
+	</DIV>
+
+	<table border="0" width="100%" cellpadding="5" CLASS="tdi" BGCOLOR="#FFCC99">
+		<TR>
+			<TD>
+				<a title='Clique para Concentradoras com alto Tráfego! ' href="">
+				  	{% image '@CocarBundle/Resources/public/images/high.jpg' %} 
+				  		<img border="0" src="{{ asset_url }}"></a>
+				  	{% endimage %} 
+				</a>
+			</TD>
+			<TD>
+				{% if circuit != null %}
+					<form action="{{ path('cocar_reportshow') }}" method="post" {{ form_enctype(form) }}>
+						{{ form_errors(form) }}
+						<select size='1' name='circuit' style="font-family: Verdana; font-size: 11px; background-color: #FAF8EB;">
+							{% for cir in circuit %}
+								<option selected value='{{ cir.id }}'>{{ cir.description }}</option>
+							{% endfor %}
+						</select>
+						<div id="form_choice">
+							{{ form_widget(form.type, {'attr': {'style': 'font-family: Verdana; font-size: 11px; background-color: #FAF8EB;'}}) }}
+						</div>
+							{{ form_widget(form.entity) }}
+						{{ form_widget(form.send) }}
+						{{ form_rest(form) }}
+					</form>
+				{% else %}
+					<h2>Atenção: Nenhum circuito encontrado!</h2>
+				{% endif %}
+			</TD>
+			{% if img is defined %}
+				<TD VALIGN='middle'  ALIGN='center' WIDTH='50'><a href='' title=' Clique para verificar Tráfego! ' target='_blank'>
+				  	{% image '@CocarBundle/Resources/public/images/traf.jpg' %} 
+				  		<img border="0" align="right" src="{{ asset_url }}" width='24' height='24'></a>
+				  	{% endimage %} 
+				</a>
+			{% endif %}
+	</TABLE>
+	{% if img is defined %}
+		<TABLE border="0" WIDTH="100%" cellspacing="0" CLASS="texto">
+			<TR ALIGN="center" VALIGN="middle" BGCOLOR="#FFCC99">
+				<TD align="center">
+					{% if type is defined %}
+						<b><FONT size="4">{{ type }}</FONT></b></TD>
+					{% endif %}
+				<TD ALIGN="right">
+					<a title=' Clique para Tabela referente ao gráfico! ' href="">
+					  	{% image '@CocarBundle/Resources/public/images/help1.gif' %} 
+					  		<img border="0" align="right" src="{{ asset_url }}" width='24' height='24'></a>
+					  	{% endimage %} 	
+					</a>
+					<a title=' Clique para Tabela referente ao gráfico! ' href="">
+					  	{% image '@CocarBundle/Resources/public/images/tabela.jpg' %} 
+					  		<img border="0" align="right" src="{{ asset_url }}" width='24' height='24'></a>
+					  	{% endimage %} 
+					</a>
+				</TD>	
+			</TR>
+			<TR>
+				<TD COLSPAN="4"></TD>
+		    </TR>
+			<TR ALIGN="left">
+				{% for image in img %}
+					<TD WIDTH="50%">
+						<img src="{{ asset('rrd/graficos/') }}{{ image }}" width="550px">
+					</TD>
+				{% endfor %}	
+			</TR>
+		</TABLE>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main %}
+	<table border="0" width="100%" cellspacing="4" class="topo">
+		<tbody>
+			<tr>
+				<td height="26" align="center" valign="middle" colspan="5">
+					<h2>Teste SNMP</h2>
+				</td>
+			</tr>
+			<tr>
+				<td height="26" align="center" valign="middle" colspan="5">
+					<form action="{{ path('cocar_infosnmp') }}" method="post" {{ form_enctype(form) }}>
+						{{ form_errors(form) }}
+						Host: {{ form_widget(form.host) }}
+						Community: {{ form_widget(form.community) }}
+						{{ form_widget(form.send) }}
+						{{ form_rest(form) }}
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td height="56" align="center" valign="middle" colspan="5">
+					<font size="1">Ex.: [HOST = 127.0.0.1 / COMMUNITY = public]</font>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+{% endblock %}

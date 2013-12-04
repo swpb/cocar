@@ -1,0 +1,106 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h1>Circuitos</h1>
+
+    <table class="records_list">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Código da Interface</th>
+                <td>{{ entity.codeInterface }}</td>
+            </tr>
+            <tr>
+                <th>Descrição do circuito</th>
+                <td>{{ entity.description }}</td>
+            </tr>
+            <tr>
+                <th>Gerencia</th>
+                <td>{{ entity.manages }}</td>
+            </tr>
+            <tr>
+                <th>IP roteador backbone</th>
+                <td>{{ entity.ipBackbone }}</td>
+            </tr>
+            <tr>
+                <th>Community snmp do roteador backbone</th>
+                <td>{{ entity.communitySnmpBackbone }}</td>
+            </tr>
+            <tr>
+                <th>Serial no roteador backbone</th>
+                <td>{{ entity.serialBackbone }}</td>
+            </tr>
+            <tr>
+                <th>Tecnologia</th>
+                <td>{{ entity.technology }}</td>
+            </tr>
+            <tr>
+                <th>Tipo da interface</th>
+                <td>{{ entity.typeInterface }}</td>
+            </tr>
+            <tr>
+                <th>Número SNMP da interface</th>
+                <td>{{ entity.numSnmpInterface }}</td>
+            </tr>
+            <tr>
+                <th>IP da serial da Interface</th>
+                <td>{{ entity.ipSerialInterface }}</td>
+            </tr>
+            <tr>
+                <th>Cadastro do circuito</th>
+                <td>{{ entity.registerCircuit }}</td>
+            </tr>
+            <tr>
+                <th>Velocidade</th>
+                <td>{{ entity.speed }}</td>
+            </tr>
+            <tr>
+                <th>CIR In</th>
+                <td>{{ entity.cirIn }}</td>
+            </tr>
+            <tr>
+                <th>CIR Out</th>
+                <td>{{ entity.cirOut }}</td>
+            </tr>
+            <tr>
+                <th>Serial no roteador da ponta</th>
+                <td>{{ entity.serialRouterTip }}</td>
+            </tr>
+            <tr>
+                <th>Identificação SNMP da porta na ponta</th>
+                <td>{{ entity.snmpPortTip }}</td>
+            </tr>
+            <tr>
+                <th>Community SNMP do roteador da ponta</th>
+                <td>{{ entity.communitySnmpRouterTip }}</td>
+            </tr>
+            <tr>
+                <th>IP da serial do roteador da ponta</th>
+                <td>{{ entity.ipSerialRouterTip }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('circuits') }}">
+            Lista de circuitos
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('circuits_edit', { 'id': entity.id }) }}">
+            Editar
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('circuits_delete', { 'id': entity.id }) }}" method="post">
+            <input type="hidden" name="_method" value="DELETE" />
+            {{ form_widget(delete_form) }}
+            <button type="submit">Deletar</button>
+        </form>
+    </li>
+</ul>
+{% endblock %}

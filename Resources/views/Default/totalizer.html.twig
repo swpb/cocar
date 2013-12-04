@@ -1,0 +1,40 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main %}
+
+	<p align='center'><B>Totaliza&ccedil;&atilde;o de Desempenho</B></p>
+
+	<table width='550' cellspacing='2' cellpadding='1' CLASS='records_list' ALIGN="center">
+		<TR ALIGN='center' VALIGN='middle'>
+			<th width='130' HEIGHT="25">Organização</th>
+			<th width='110'>Tráfego Alto</th>
+			<th width='110'>Tráfego Baixo</th>
+			<th width='110'>Confiabilidade</th>
+			<th width='90'>Total</th>
+		</TR>
+		{% if circuits is defined %}
+			{% set total, t, high, without, rly = 0, 0, 0, 0, 0 %}
+			{% for key, cir in circuits %}
+				<TR ALIGN='center' VALIGN='middle'>
+					<TD ALIGN='left'>
+						<a href="{{ path('cocar_report', { 'id': key })}}">{{ cir.description }}</a>
+					</TD>
+					<TD>{{ cir.high }}</TD>
+					<TD>{{ cir.without }}</TD>
+					<TD>{{ cir.rly }}</TD>
+					<TD ALIGN='right'>{{ cir.totalCirc }}/{{ cir.total }}</TD>
+				</TR>
+				{% set total, t = total + cir.total, t + cir.totalCirc %}
+				{% set high, without, rly = high + cir.high, without + cir.without, rly + cir.rly %}
+			{% endfor %}
+		{% endif %}
+		<TR ALIGN='center' VALIGN='middle'>
+			<th>TOTAL</th>
+			<th>{{ high }}</th>
+			<th>{{ without }}</th>
+			<th>{{ rly }}</th>
+			<th ALIGN='right'>{{ t }}/{{ total }}</th>
+		</TR>
+	</table>
+
+{% endblock %}

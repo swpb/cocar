@@ -1,0 +1,58 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main %}
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tbody>
+			<tr height="28" class="acessos">
+				<td valign="middle" align="center" width="50">
+					<a href="telnet://{{ circuit.ipBackbone }}" title="TELNET">
+						{% image '@CocarBundle/Resources/public/images/telnet.gif' %}
+							<img src="{{ asset_url }}" align="middle" border="0">
+						{% endimage %}
+					</a>
+				</td>
+				<td valign="middle" class="tht">
+					<font color="#0000FF">{{ circuit.entity.description|upper }}</font>: {{ circuit.description }} - ({{ circuit.ipBackbone }}) Nº {{ circuit.registerCircuit }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+		<tbody>
+			<tr height="28" class="info">
+	    		<td><b>wlan0</b></td>
+	    		<td><b>Porta: 1024 KB</b></td>
+	    		<td><b>Cir In: 512 KB</b></td>
+				<td><b>Cir Out: 512 KB</b></td>
+			</tr>
+			<tr></tr>
+		</tbody>
+	</table>
+	<table border="0" width="100%" cellspacing="4">
+		<tbody>
+			<tr>
+				<td height="26" align="center" valign="middle" class="topo" colspan="5">
+					<form action="{{ path('cocar_graphshow', { 'id': circuit.id }) }}" method="get" {{ form_enctype(form) }}>
+						{{ form_errors(form) }}
+						{{ form_widget(form.choice) }}
+						<div id="form_choice">
+							{{ form_widget(form.period) }}
+						</div>
+						{{ form_widget(form.send) }}
+						{{ form_rest(form) }}
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	{% if img is defined %}
+		<div align="center" style="margin-top:40px">
+			{% for image in img %}
+				<img src="{{ asset('rrd/graficos/') }}{{ image }}"><p>
+			{% endfor %}	
+		</div>
+		<div align="center">
+	        {{ knp_pagination_render(img, "CocarBundle::pagination.html.twig") }}
+	    </div>
+	{% endif %}
+{% endblock %}

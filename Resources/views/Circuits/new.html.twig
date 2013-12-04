@@ -1,0 +1,118 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <style type="text/css">
+    body
+        {
+            scrollbar-face-color: #FFFFFF;
+            scrollbar-shadow-color: #c0c0c0;
+            scrollbar-highlight-color: #FFFFFF;
+            scrollbar-3dlight-color: #c0c0c0;
+            scrollbar-darkshadow-color: #FFFFFF;
+            scrollbar-track-color: #ffffff;
+            scrollbar-arrow-color: #c0c0c0;
+            font-family: Verdana, Arial;
+            font-size: 10pt;
+        }
+    </style>
+    <center><h3>Cadastro de Circuitos</h3></center>
+    <center>
+        <p>
+            Problemas ao cadastrar o circuito? Verifique a <a href="#help">tabela de configurações</a> ou faça o <a href="{{ path('cocar_snmpweb') }}">teste de snmp.</a>
+        </p>
+        <form action="{{ path('circuits_create') }}" method="post" {{ form_enctype(form) }}>
+            <table class="records_list" border=0 cellspacing=2 cellpadding=2>
+                <tr>
+                    {{ form_errors(form) }}
+
+                    <th> Código da Interface: </th>
+                    <td> {{ form_widget(form.codeInterface) }}</td>
+                </tr>
+                <tr>
+                    <th> Descrição do circuito: </th>
+                    <td> {{ form_widget(form.description) }} </td>
+                </tr>
+                <tr>
+                    <th> Entidade: </th>
+                    <td> {{ form_widget(form.entity) }} </td>
+                </tr>
+                <tr>
+                    <th> Gerencia: </th>
+                    <td> {{ form_widget(form.manages) }} </td>
+                </tr>
+                <tr>
+                    <th>IP roteador backbone: </th>
+                    <td> {{ form_widget(form.ipBackbone) }} </td>
+                </tr>
+                <tr>
+                    <th> Community snmp do roteador backbone: </th>
+                    <td> {{ form_widget(form.communitySnmpBackbone) }} </td>
+                </tr>
+                <tr>
+                    <th> Serial no roteador backbone: </th>
+                    <td> {{ form_widget(form.serialBackbone) }} </td>
+                </tr>
+                <tr>
+                    <th> Tecnologia: </th>
+                    <td> {{ form_widget(form.technology) }} </th>
+                </tr>
+                <tr>
+                    <th> Tipo da Interface: </th>
+                    <td> {{ form_widget(form.typeInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> Número SNMP da interface: </th>
+                    <td> {{ form_widget(form.numSnmpInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> IP da serial da Interface: </th>
+                    <td> {{ form_widget(form.ipSerialInterface) }} </td>
+                </tr>
+                <tr>
+                    <th> Cadastro do circuito: </th>
+                    <td> {{ form_widget(form.registerCircuit) }} </td>
+                </tr>
+                <tr>
+                    <th> Velocidade: </th>
+                    <td> {{ form_widget(form.speed) }} </td>
+                </tr>
+                <tr>
+                    <th> CIR In: </th>
+                    <td> {{ form_widget(form.cirIn) }} </td>
+                </tr>
+                <tr>
+                    <th> CIR Out: </th>
+                    <td> {{ form_widget(form.cirOut) }} </td>
+                </tr>
+                <tr>
+                    <th> Serial no roteador da ponta: </th>
+                    <td> {{ form_widget(form.serialRouterTip) }} </td>
+                </tr>
+                <tr>
+                    <th> Identificação SNMP da porta na ponta: </th>
+                    <td> {{ form_widget(form.snmpPortTip) }} </td>
+                </tr>
+                <tr>
+                    <th> Community SNMP do roteador da ponta: </th>
+                    <td> {{ form_widget(form.communitySnmpRouterTip) }} </td>
+                </tr>
+                <tr>
+                    <th> IP da serial do roteador da ponta: </th>
+                    <td> {{ form_widget(form.ipSerialRouterTip) }} </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button type="submit">Cadastrar</button>
+                    </td>
+                </tr>
+            </table>
+            {{ form_widget(form._token) }}
+        </form>
+        {% image '@CocarBundle/Resources/public/images/help_circuit.jpg' %} 
+            <div style="margin-top:60px">
+                <a id="help"><h2>Tabela de configurações</h2></a>
+                <img border="0" src="{{ asset_url }}" align="middle"></a>
+            </div>
+        {% endimage %}  
+    </center>
+{% endblock %}

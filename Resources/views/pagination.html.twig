@@ -1,0 +1,68 @@
+    {% if pageCount > 1 %}
+    <ul class="tsc_pagination tsc_paginationB tsc_paginationB09">
+
+    {% if previous is defined %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&laquo;&nbsp;{{ 'Anterior' }}</a>
+        </li>
+    {% else %}
+        <li>
+           <a href="#"> &laquo;&nbsp;{{ 'Anterior' }}</a>
+        </li>
+    {% endif %}
+
+    {% if startPage > 1 %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+        </li>
+        {% if startPage == 3 %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
+            </li>
+        {% elseif startPage != 2 %}
+        <li class="disabled">
+            &hellip;
+        </li>
+        {% endif %}
+    {% endif %}
+    {% for page in pagesInRange  %}
+        {% if page != current %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="#" class="current">{{ page }}</a>
+            </li>
+        {% endif %}
+
+    {% endfor %}
+
+    {% if pageCount > endPage %}
+        {% if pageCount > (endPage + 1) %}
+            {% if pageCount > (endPage + 2) %}
+                <li class="disabled">
+                    &hellip;
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
+                </li>
+            {% endif %}
+        {% endif %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+        </li>
+    {% endif %}
+
+    {% if next is defined %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">{{ 'Próximo' }}&nbsp;&raquo;</a>
+        </li>
+    {% else %}
+        <li>
+            <a href="#">{{ 'Próximo' }}&nbsp;&raquo;</a>
+        </li>
+    {% endif %}
+    </ul>
+{% endif %}

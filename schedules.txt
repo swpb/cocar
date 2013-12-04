@@ -1,0 +1,8 @@
+30 06 * * * php /var/www/cocar/app/console perform:task --graphdailyperform
+0 06 * * * php /var/www/cocar/app/console perform:task --rrdlog
+0 5 * * * php /var/www/cocar/app/console perform:task --dailyperform
+*/5 * * * * php /var/www/cocar/app/console perform:task --reliability
+0,5,10,15,20,25,30,35,40,45,50,55 7-19 * * * php /var/www/projeto-cocar/app/console perform:task --generatealarm
+0 20 * * * php /var/www/cocar/app/console perform:task --endalarm
+1,6,11,16,21,26,31,36,41,46,51,56 7-19 * * * php /var/www/projeto-cocar/app/console perform:task --status
+* * * * * php /var/www/cocar/app/console perform:task --monitor

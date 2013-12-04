@@ -1,0 +1,40 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <style type="text/css">
+    body
+        {
+            scrollbar-face-color: #FFFFFF;
+            scrollbar-shadow-color: #c0c0c0;
+            scrollbar-highlight-color: #FFFFFF;
+            scrollbar-3dlight-color: #c0c0c0;
+            scrollbar-darkshadow-color: #FFFFFF;
+            scrollbar-track-color: #ffffff;
+            scrollbar-arrow-color: #c0c0c0;
+            font-family: Verdana, Arial;
+            font-size: 10pt;
+        }
+    </style>
+    <center><h2>Cadastro de Entidades </h2></center>
+    <center>
+        <form action="{{ path('entity_create') }}" method="post" {{ form_enctype(form) }}>
+            <table class="records_list" border=0 cellspacing=2 cellpadding=2>
+                <tr>
+                    {{ form_errors(form) }}
+                    <th> Identificador: </th>
+                    <td> {{ form_widget(form.identifier) }} </td>
+                </tr>
+                <tr>
+                    <th> Descrição da entidade: </th>
+                    <td> {{ form_widget(form.description) }} </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button type="submit">Cadastrar</button>
+                    </td>
+                </tr>
+            </table>
+            {{ form_rest(form) }}
+        </form>
+    </center>
+{% endblock %}

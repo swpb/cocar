@@ -1,0 +1,397 @@
+.laterais
+	{
+		border-left: #F58735 1px solid; 
+		border-right: #F58735 1px solid; 
+		border-bottom: #F58735 1px solid; 
+		FONT-FAMILY: Arial, Verdana; 
+		FONT-SIZE: 8pt; 
+		FONT-WEIGHT: bold
+	}
+.final 
+	{
+		border-bottom: #F58735 1px solid;
+	}
+.thtt
+	{
+		FONT-FAMILY: Arial, Verdana; 
+		FONT-SIZE: 9pt; 
+		FONT-WEIGHT: bold; 
+		TEXT-VALGIN: middle;
+	}
+.OnLine
+	{
+		font-family: Verdana;
+		font-size: 7pt;
+		color: #000080;
+		font-weight: bold;
+	}
+
+.box {
+  display: inline-block;
+  width: 12%;
+  height: 100px;
+  margin: 1em;
+  vertical-align:top;
+}
+
+.main {
+  display: inline-block;
+  width: 82%;
+  margin: 1em;
+  vertical-align:top;
+}
+
+.caixa
+	{
+		BORDER-RIGHT: #F58735 1px solid;
+		BORDER-TOP: #F58735 1px solid;
+		BORDER-LEFT: #F58735 1px solid;
+		BORDER-BOTTOM: #F58735 1px solid;
+		FONT-SIZE: 10px;
+		FONT-FAMILY: Verdana, Arial;
+		width:100px;
+	}
+.impar
+	{
+		background-color: #FFFFFF;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #F58735;
+		FONT-FAMILY: Verdana, Arial;
+		FONT-SIZE: 8pt;
+		FONT-WEIGHT: bold
+	}
+
+.par
+	{
+		background-color: #EEEEE6;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #F58735;
+		FONT-FAMILY: Verdana, Arial;
+		FONT-SIZE: 8pt;
+		FONT-WEIGHT: bold
+	}
+
+.tab
+	{
+		border: #F58735 2px solid;
+	}
+.topo
+        {
+                background-color: #006666;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #FF9900;
+                padding-left: 1;
+                padding-right: 1;
+                padding-top: 2;
+                padding-bottom: 2;
+                FONT: 10pt Verdana, Arial;
+                FONT-WEIGHT: bold;
+                COLOR: #FFFFFF;
+        }
+
+.rly
+        {
+                background-color: #CEFFCE;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #FF9900;
+                padding-left: 1;
+                padding-right: 1;
+                padding-top: 2;
+                padding-bottom: 2;
+                FONT: 7pt Verdana, Arial;
+                FONT-WEIGHT: bold;
+                COLOR: #00000;
+        }
+
+.alto1
+        {
+                background-color: #80FFFF;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #FF9900;
+                padding-left: 1;
+                padding-right: 1;
+                padding-top: 2;
+                padding-bottom: 2;
+                FONT: 7pt Verdana, Arial;
+                FONT-WEIGHT: bold;
+                COLOR: #000000;
+        }
+
+.alto2
+        {
+                background-color: #B3D9FF;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #FF9900;
+                padding-left: 1;
+                padding-right: 1;
+                padding-top: 2;
+                padding-bottom: 2;
+                FONT: 7pt Verdana, Arial;
+                FONT-WEIGHT: bold;
+                COLOR: #000000;
+        }
+
+.zero1
+        {
+                background-color: #FFFFDD;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #FF9900;
+                padding-left: 1;
+                padding-right: 1;
+                padding-top: 2;
+                padding-bottom: 2;
+                FONT: 7pt Verdana, Arial;
+                FONT-WEIGHT: bold;
+                COLOR: #0000BF;
+        }
+
+.zero2
+        {
+                background-color: #F0F000;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #FF9900;
+                padding-left: 1;
+                padding-right: 1;
+                padding-top: 2;
+                padding-bottom: 2;
+                FONT: 7pt Verdana, Arial;
+                FONT-WEIGHT: bold;
+                COLOR: #0000BF;
+        }
+
+body
+        {
+		background-image: url("../images/background.gif");
+                scrollbar-face-color: #FFFFFF;
+                scrollbar-shadow-color: #c0c0c0;
+                scrollbar-highlight-color: #FFFFFF;
+                scrollbar-3dlight-color: #c0c0c0;
+                scrollbar-darkshadow-color: #FFFFFF;
+                scrollbar-track-color: #ffffff;
+                scrollbar-arrow-color: #c0c0c0;
+                font-family: Verdana, Arial;
+                font-size: 12pt;
+        }
+
+A:link
+        {
+                font-family: Verdana, Arial;
+                font-size: 8pt;
+                FONT-WEIGHT: bold;
+                COLOR: #000000;
+                TEXT-DECORATION: none;
+                CURSOR: hand;
+        }
+
+A:visited
+        {
+                font-family: Verdana, Arial;
+                font-size: 8pt;
+                FONT-WEIGHT: bold;
+                COLOR: #333333;
+                TEXT-DECORATION: none;
+                CURSOR: hand;
+        }
+
+A:active
+        {
+                font-family: Verdana, Arial;
+                font-size: 8pt;
+                FONT-WEIGHT: bold;
+                COLOR: #FF8000;
+                TEXT-DECORATION: none;
+                CURSOR: hand;
+        }
+
+A:hover
+        {
+                font-family: Verdana, Arial;
+                font-size: 8pt;
+                FONT-WEIGHT: bold;
+                TEXT-DECORATION: none;
+                color:#FF0000;
+                CURSOR: hand;
+        }
+
+
+.result
+        {
+                border-width: 1px;
+                border-style: solid;
+                border-color: #F58735;
+                FONT-FAMILY: Verdana, Arial;
+                FONT-SIZE: 9pt;
+                FONT-WEIGHT: bold
+        }
+
+.thd
+        {
+                background-color: #006666;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #F58735;
+                FONT-FAMILY: Verdana, Arial;
+                FONT-SIZE: 9pt;
+                FONT-WEIGHT: bold;
+                COLOR: #FFFFFF;
+                ALIGN: center;
+        }
+
+.acessos
+	{
+		border: #F58735 1px solid;  
+		FONT-FAMILY: Verdana, Arial; 
+		FONT-SIZE: 9pt; 
+		FONT-WEIGHT: bold
+	}
+
+A
+        {
+                FONT-FAMILY: Verdana, Arial; 
+                FONT-WEIGHT: bold; 
+                FONT-SIZE: 8pt; 
+                COLOR: #08296b; 
+                text-decoration: none
+        }
+
+.sys
+        {
+                PADDING-LEFT: 10px;
+                FONT: 8pt Verdana, Arial;
+                FONT-WEIGHT: bold; 
+                COLOR: #404000;
+        }
+
+.desc
+        {
+                PADDING-LEFT: 10px;
+                FONT: 8pt Verdana, Arial;
+                FONT-WEIGHT: bold; 
+                COLOR: #000;
+        }
+
+.info
+        {
+                background-color: #404000;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #F58735;
+                FONT-FAMILY: Verdana, Arial;
+                FONT-SIZE: 9pt;
+                FONT-WEIGHT: bold;
+                COLOR: #FFF;
+                ALIGN: center;
+        }
+
+.tht
+
+	{
+
+		font-size: 10pt; 
+
+		font-family: Arial, Verdana; 
+
+		font-weight: bold; 
+
+		text-align: left; 
+
+		text-valign: middle
+
+	}
+
+.tdt
+
+	{
+
+		font-size: 10pt; 
+
+		font-family: Verdana, Arial; 
+
+		font-weight: bold; 
+
+		text-align: left; 
+
+		text-valign: middle
+
+	}
+
+.tdi
+
+	{
+
+		font-size: 10pt; 
+
+		font-family: Verdana, Arial; 
+
+		font-weight: bold; 
+
+		text-align: left; 
+
+		text-valign: middle;
+
+		BORDER-COLOR: #F58735; 
+
+		BORDER-STYLE: solid; 
+
+		BORDER-WIDTH: 1px; 
+
+	}
+
+.tdx
+
+	{
+
+		font-size: 9pt;
+
+		font-family: Verdana, Arial; 
+
+		font-weight: bold; 
+
+		text-align: left; 
+
+		text-valign: middle;
+
+	}
+
+table.records_list
+	{
+		border-collapse: collapse;
+		border: #0B3B0B 1px solid;
+                FONT-FAMILY: Verdana, Arial;
+                FONT-SIZE: 9pt;
+                FONT-WEIGHT: bold;
+	}
+
+table.records_list tr td 
+	{ 
+		border: #0B3B0B 1px solid; 
+		padding-left: 10px; 
+		padding-right: 10px;
+	}
+
+.records_list th 
+	{ 
+		background-color: #0B3B0B;
+		border: #FFF 1px solid;
+		color: #FFF;
+                padding-left: 10px; 
+                padding-right: 10px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+
+#form_choice
+        {
+                display: inline-block;
+                margin-right: 10px;
+        }
+
+

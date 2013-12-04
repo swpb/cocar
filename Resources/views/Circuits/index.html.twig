@@ -1,0 +1,47 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2>Circuitos cadastrados</h2>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Codeinterface</th>
+                <th>Description</th>
+                <th>Manages</th>
+                <th>Ipbackbone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('circuits_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.codeInterface }}</td>
+                <td>{{ entity.description }}</td>
+                <td>{{ entity.manages }}</td>
+                <td>{{ entity.ipBackbone }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('circuits_show', { 'id': entity.id }) }}">Visualizar</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('circuits_edit', { 'id': entity.id }) }}">Editar</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('circuits_new') }}">
+                Cadastrar um novo circuito
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

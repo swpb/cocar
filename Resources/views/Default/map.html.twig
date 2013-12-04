@@ -1,0 +1,112 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block search %}
+	{% if search_result is defined %}
+		{% for result in search_result %}
+			<table width="150" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px">
+				<tbody>
+					<tr>
+						{% image '@CocarBundle/Resources/public/images/boxverde_e.gif' %} 
+							<td width='1' align='right'><img border='0' src='{{ asset_url }}' width='5' height='25'></td>
+						{% endimage %}
+				    	</td>
+						{% image '@CocarBundle/Resources/public/images/boxverde_m.gif' %} 
+							<td background='{{ asset_url }}'  align='center' valign='middle' CLASS='thtt'>
+								<b>/{{ result.identifier }}</b>
+							</td>
+						{% endimage %} 
+						{% image '@CocarBundle/Resources/public/images/boxverde_d.gif' %} 
+							<td width='5'>
+								<img src='{{ asset_url }}' width='5' height='25'>
+							</td>
+						{% endimage %} 
+				  	</tr>
+				</tbody>
+			</table>
+			<table width="150" border="0" cellspacing="0" cellpadding="4" class="laterais" bgcolor="#F3FAE9">
+				<tbody>
+					<tr>
+						<td>
+							<a href="{{ path('cocar_graph', {'id': result.id }) }}">
+								{{ result.description }}
+							</a><br>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		{% endfor %}
+		{% if search_result == null and search == true %}
+			<font size='1' face='Verdana, Arial, Helvetica, sans-serif' color="red">
+				<p>Nenhum resultado encontrado</p>
+			</font>
+		{% endif %}
+	{% endif %}
+{% endblock %}
+
+{% block main %}
+	<table border="0" width="100%" cellspacing="4">
+		<tbody>
+			<tr>
+				<td height="26" align="center" valign="middle" class="topo" colspan="5">
+					Unidades que Apresentam Tráfego Alto
+				</td>
+			</tr>
+			<tr>
+				{% for ht in high_traffic %}
+					<td width="25%" height="26" align="center" valign="middle" class="rly">
+							<a href='graph/{{ ht.id }}'>{{ ht.description }}/{{ ht.entity }}</a>
+					</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+	<table border="0" width="100%" cellspacing="4">
+		<tbody>
+			<tr>
+				<td height="26" align="center" valign="middle" class="topo" colspan="5">
+					Unidades que Não Apresentam Tráfego
+				</td>
+			</tr>
+			<tr>
+				{% for wt in without_traffic %}
+					<td width="25%" height="26" align="center" valign="middle" class="rly">
+							<a href='graph/{{ wt.id }}'>{{ wt.description }}/{{ wt.entity }}</a>
+					</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+	<table border="0" width="100%" cellspacing="4">
+		<tbody>
+			<tr>
+				<td height="26" align="center" valign="middle" class="topo" colspan="5">
+					Unidades com Problemas de Confiabilidade
+				</td>
+			</tr>
+			<tr>
+				{% for rly in reliability %}
+					<td width="25%" height="26" align="center" valign="middle" class="rly">
+							<a href='graph/{{ rly.id }}'>{{ rly.description }}/{{ rly.entity }}</a>
+					</td>
+				{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+
+	<p align='center'>
+		<b>Total de Unidades com Alerta de Tráfego Irregular<FONT COLOR='#FF3300'> {{ (high_traffic|length + without_traffic|length) + reliability|length}} <FONT COLOR='#000000'>de</FONT> {{ total }}</FONT></b>
+	</p>
+
+	<table width='490' cellspacing='2' cellpadding='2' ALIGN='center'>
+		<tr align='center' valign='middle'>
+			<td class='thd'>Tráfego Alto</TD>
+			<td CLASS='thd'>Tráfego Baixo</TD>
+			<td class='thd'>Confiabilidade</TD>
+		</tr>
+		<tr align='center' valign='middle'>
+			<td class='result'>{{ high_traffic|length }}</TD>
+			<td class='result'>{{ without_traffic|length }}</TD>
+			<td class='result'>{{ reliability|length }}</TD>
+		</tr>
+	</table>
+{% endblock %}
