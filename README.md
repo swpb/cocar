@@ -65,6 +65,7 @@ Instalação:
 
 6 – Instale os assets.
         Edite o arquivo app/config/config.yml e adicione CocarBundle na opção bundles
+```js
         //...
         # Assetic Configuration
         assetic:
@@ -74,6 +75,8 @@ Instalação:
         
          //...
 
+```
+	Depois rode os comandos abaixo 
  
 	php app/console assetic:dump
         php app/console assets:install
