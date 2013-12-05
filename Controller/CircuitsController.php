@@ -50,6 +50,7 @@ class CircuitsController extends Controller
     {
         $entity  = new Circuits();
         $form = $this->createForm(new CircuitsType(), $entity);
+
         $form->bind($request);
 
         if ($form->isValid()) {
@@ -155,6 +156,7 @@ class CircuitsController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new CircuitsType(), $entity);
+
         $editForm->bind($request);
 
         if ($editForm->isValid()) {
@@ -179,6 +181,7 @@ class CircuitsController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
+
         $form->bind($request);
 
         if ($form->isValid()) {

@@ -47,6 +47,7 @@ class EntityController extends Controller
     {
         $entity  = new Entity();
         $form = $this->createForm(new EntityType(), $entity);
+
         $form->bind($request);
 
         if ($form->isValid()) {
@@ -152,6 +153,7 @@ class EntityController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new EntityType(), $entity);
+
         $editForm->bind($request);
 
         if ($editForm->isValid()) {
@@ -176,6 +178,7 @@ class EntityController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
+
         $form->bind($request);
 
         if ($form->isValid()) {
