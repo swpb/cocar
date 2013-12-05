@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Entity;
+namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

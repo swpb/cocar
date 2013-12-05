@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Entity;
+namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Entity
  *
  * @ORM\Table(name="tb_entity")
- * @ORM\Entity(repositoryClass="GerenciadorRedes\Bundle\CocarBundle\Entity\CustomEntityRepository")
+ * @ORM\Entity(repositoryClass="Swpb\Bundle\CocarBundle\Entity\CustomEntityRepository")
  */
 class Entity
 {
@@ -111,7 +111,7 @@ class Entity
      * @param \Cocar\CocarBundle\Entity\Circuits $circuits
      * @return Entity
      */
-    public function addCircuit(\GerenciadorRedes\Bundle\CocarBundle\Entity\Circuits $circuits)
+    public function addCircuit(\Swpb\Bundle\CocarBundle\Entity\Circuits $circuits)
     {
         $this->circuits[] = $circuits;
     
@@ -123,7 +123,7 @@ class Entity
      *
      * @param \Cocar\CocarBundle\Entity\Circuits $circuits
      */
-    public function removeCircuit(\GerenciadorRedes\Bundle\CocarBundle\Entity\Circuits $circuits)
+    public function removeCircuit(\Swpb\Bundle\CocarBundle\Entity\Circuits $circuits)
     {
         $this->circuits->removeElement($circuits);
     }

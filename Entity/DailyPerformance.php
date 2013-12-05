@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Entity;
+namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Performance
  *
  * @ORM\Table(name="tb_daily_performance")
- * @ORM\Entity(repositoryClass="GerenciadorRedes\Bundle\CocarBundle\Entity\DailyPerformanceRepository")
+ * @ORM\Entity(repositoryClass="Swpb\Bundle\CocarBundle\Entity\DailyPerformanceRepository")
  */
 class DailyPerformance
 {

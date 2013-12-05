@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Entity;
+namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Circuits
  *
  * @ORM\Table(name="tb_circuits")
- * @ORM\Entity(repositoryClass="GerenciadorRedes\Bundle\CocarBundle\Entity\CustomCircuitsRepository")
+ * @ORM\Entity(repositoryClass="Swpb\Bundle\CocarBundle\Entity\CustomCircuitsRepository")
  */
 class Circuits
 {
@@ -639,7 +639,7 @@ class Circuits
      * @param \Cocar\CocarBundle\Entity\Entity $entity
      * @return Circuits
      */
-    public function setEntity(\GerenciadorRedes\Bundle\CocarBundle\Entity\Entity $entity = null)
+    public function setEntity(\Swpb\Bundle\CocarBundle\Entity\Entity $entity = null)
     {
         $this->entity = $entity;
     
@@ -801,7 +801,7 @@ class Circuits
      * @param \Cocar\CocarBundle\Entity\Machine $machine
      * @return Entity
      */
-    public function addMachine(\GerenciadorRedes\Bundle\CocarBundle\Entity\Machine $machine)
+    public function addMachine(\Swpb\Bundle\CocarBundle\Entity\Machine $machine)
     {
         $this->machine[] = $machine;
     
@@ -813,7 +813,7 @@ class Circuits
      *
      * @param \Cocar\CocarBundle\Entity\Circuits $machine
      */
-    public function removeMachine(\GerenciadorRedes\Bundle\CocarBundle\Entity\Machine $machine)
+    public function removeMachine(\Swpb\Bundle\CocarBundle\Entity\Machine $machine)
     {
         $this->machine->removeElement($machine);
     }
