@@ -47,7 +47,7 @@ class EntityController extends Controller
     {
         $entity  = new Entity();
         $form = $this->createForm(new EntityType(), $entity);
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -152,7 +152,7 @@ class EntityController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new EntityType(), $entity);
-        $editForm->submit($request);
+        $editForm->find($request);
 
         if ($editForm->isValid()) {
             $em->persist($entity);
@@ -176,7 +176,7 @@ class EntityController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();

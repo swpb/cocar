@@ -50,7 +50,7 @@ class CircuitsController extends Controller
     {
         $entity  = new Circuits();
         $form = $this->createForm(new CircuitsType(), $entity);
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -155,7 +155,7 @@ class CircuitsController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createForm(new CircuitsType(), $entity);
-        $editForm->submit($request);
+        $editForm->find($request);
 
         if ($editForm->isValid()) {
             $em->persist($entity);
@@ -179,7 +179,7 @@ class CircuitsController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();

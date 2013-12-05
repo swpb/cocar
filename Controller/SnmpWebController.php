@@ -22,7 +22,7 @@ class SnmpWebController extends Controller
     public function snmpInfoAction(Request $request)
     {
         $form = $this->snmpForm();
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid())
         {

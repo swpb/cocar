@@ -39,7 +39,7 @@ class GraphController extends Controller
 	public function graphShowAction(Request $request, $id)
 	{
 		$form = $this->graphForm();
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid())
         {
@@ -842,7 +842,7 @@ class GraphController extends Controller
     public function reportShowAction(Request $request)
     {
 		$form = $this->reportForm($request->request->get('entity'));
-        $form->submit($request);
+        $form->find($request);
 
         if ($form->isValid())
         {
