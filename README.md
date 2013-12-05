@@ -46,6 +46,7 @@ Instalação:
         {
                 $bundles = array(
                         //...
+                        new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
                         new Swpb\Bundle\CocarBundle\CocarBundle()
                 );
         }
