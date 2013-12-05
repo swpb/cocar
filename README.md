@@ -64,8 +64,18 @@ Instalação:
         php app/console doctrine:schema:update --force
 
 6 – Instale os assets.
+        Edite o arquivo app/config/config.yml e adicione CocarBundle na opção bundles
+        //...
+        # Assetic Configuration
+        assetic:
+            debug:          "%kernel.debug%"
+            use_controller: false
+            bundles:        [ CocarBundle ]
+        
+         //...
 
-        php app/console assetic:dump
+ 
+	php app/console assetic:dump
         php app/console assets:install
 
 7 – Adicione os agendamentos ao cron.
