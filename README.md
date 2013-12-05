@@ -29,7 +29,7 @@ Instalação:
 	"jms/serializer": "0.14.*@dev",
 	"jms/serializer-bundle": "0.13.*@dev",
 	"knplabs/knp-paginator-bundle": "dev-master",
-	"gerenciador-redes/cocar-bundle": "dev-master"
+	"swpb/cocar": "dev-master"
     }
 
     //...
