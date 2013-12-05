@@ -84,7 +84,7 @@ Depois rode os comandos abaixo
 
 Atenção: Verifique os caminhos existentes em "schedules.txt" antes de adicioná-lo ao cron.
 
-        crontab -u {usuario} schedules.txt
+        crontab -u www-data vendor/swpb/cocar/Swpb/Bundle/CocarBundle/schedules.txt
 
 Configuração:
 ===============
