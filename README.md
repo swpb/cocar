@@ -23,7 +23,6 @@ Instalação:
     "require": {
         //...
 	"jpgraph/jpgraph": "dev-master",
-	"symfony/class-loader": "2.2.*",
 	"incenteev/composer-parameter-handler": "~2.0",
 	"friendsofsymfony/rest-bundle": "dev-master",
 	"jms/serializer": "0.14.*@dev",
@@ -71,7 +70,7 @@ Instalação:
         assetic:
             debug:          "%kernel.debug%"
             use_controller: false
-            bundles:        [ CocarBundle ]
+            bundles:        [ CocarBundle ] //<-
         
          //...
 
