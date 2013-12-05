@@ -47,7 +47,7 @@ Instalação:
         {
                 $bundles = array(
                         //...
-                        new GerenciadorRedes\Bundle\CocarBundle\CocarBundle()
+                        new Swpb\Bundle\CocarBundle\CocarBundle()
                 );
         }
 ```
@@ -65,8 +65,8 @@ Instalação:
 
 6 – Instale os assets.
 
-        php app/console assets:install
         php app/console assetic:dump
+        php app/console assets:install
 
 7 – Adicione os agendamentos ao cron.
 

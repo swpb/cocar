@@ -11,6 +11,6 @@ services:
 #        class: Cocar\CocarBundle\Controller\GraphController
 services:
     cocar_monitor:
-        class: GerenciadorRedes\Bundle\CocarBundle\Controller\MonitorController
+        class: Swpb\Bundle\CocarBundle\Controller\MonitorController
     circuit:
-        class: GerenciadorRedes\Bundle\CocarBundle\Entity\Circuits
+        class: Swpb\Bundle\CocarBundle\Entity\Circuits

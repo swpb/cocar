@@ -1,6 +1,6 @@
 <?php
 
-namespace GerenciadorRedes\Bundle\CocarBundle\Form;
+namespace Swpb\Bundle\CocarBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -53,7 +53,7 @@ class CircuitsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'GerenciadorRedes\Bundle\CocarBundle\Entity\Circuits'
+            'data_class' => 'Swpb\Bundle\CocarBundle\Entity\Circuits'
         ));
     }
 
