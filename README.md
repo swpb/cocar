@@ -76,7 +76,7 @@ Instalação:
          //...
 
 ```
-	Depois rode os comandos abaixo 
+Depois rode os comandos abaixo 
  
 	php app/console assetic:dump
         php app/console assets:install
