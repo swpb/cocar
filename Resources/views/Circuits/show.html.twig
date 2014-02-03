@@ -1,10 +1,16 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <h1>Circuitos</h1>
+    <h1 class="general-title">Circuitos</h1>
 
     <table class="records_list">
-        <tbody>
+        <thead>
+            <tr>
+                <th width="50%"></th>
+                <th width="50%"></th>
+            </tr>
+        </thead>
+        <tbody class="bodyView">
             <tr>
                 <th>Id</th>
                 <td>{{ entity.id }}</td>
@@ -99,7 +105,7 @@
         <form action="{{ path('circuits_delete', { 'id': entity.id }) }}" method="post">
             <input type="hidden" name="_method" value="DELETE" />
             {{ form_widget(delete_form) }}
-            <button type="submit">Deletar</button>
+            <button type="submit" class="deletar">Deletar</button>
         </form>
     </li>
 </ul>

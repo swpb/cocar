@@ -23,6 +23,7 @@ Instalação:
     "require": {
         //...
 	"jpgraph/jpgraph": "dev-master",
+	"symfony/class-loader": "2.2.*",
 	"incenteev/composer-parameter-handler": "~2.0",
 	"friendsofsymfony/rest-bundle": "dev-master",
 	"jms/serializer": "0.14.*@dev",
@@ -46,7 +47,6 @@ Instalação:
         {
                 $bundles = array(
                         //...
-                        new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
                         new Swpb\Bundle\CocarBundle\CocarBundle()
                 );
         }
@@ -71,7 +71,7 @@ Instalação:
         assetic:
             debug:          "%kernel.debug%"
             use_controller: false
-            bundles:        [ CocarBundle ] //<-
+            bundles:        [ CocarBundle ]
         
          //...
 
@@ -85,7 +85,7 @@ Depois rode os comandos abaixo
 
 Atenção: Verifique os caminhos existentes em "schedules.txt" antes de adicioná-lo ao cron.
 
-        crontab -u www-data vendor/swpb/cocar/Swpb/Bundle/CocarBundle/schedules.txt
+        crontab -u {usuario} schedules.txt
 
 Configuração:
 ===============

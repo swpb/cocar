@@ -1,7 +1,7 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <h2>Circuitos cadastrados</h2>
+    <h2 class="general-title">Circuitos cadastrados</h2>
 
     <table class="records_list">
         <thead>
@@ -37,7 +37,7 @@
         </tbody>
     </table>
 
-        <ul>
+        <ul class="button">
         <li>
             <a href="{{ path('circuits_new') }}">
                 Cadastrar um novo circuito

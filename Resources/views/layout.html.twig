@@ -1,7 +1,49 @@
 {% extends 'CocarBundle::base.html.twig' %}
 
 {% block body -%}
-  <table border="0" width="100%" bgcolor="#CCCC99" cellspacing="0" cellpadding="0">
+
+
+<div class="main-container">
+	<div class="menu">
+		<ul>
+			<li>
+				<a href="{{ path('cocar_map') }}" target="_top" onmouseover="showHideLayers('descricao','Página Inicial','show')" onmouseout="showHideLayers('descricao','','hide')">
+					<img border="0" src="{{asset('bundles/cocar/images/home.png')}}" align="middle">
+					<span>Início</span>
+				</a>
+			</li>
+			<li>
+				<a href="{{ path('entity') }}" onmouseover="showHideLayers('descricao','Entidades','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  		<img border="0" src="{{asset('bundles/cocar/images/entidades.png')}}" align="middle">
+					<span>Entidades</span>
+			  	</a>
+			</li>
+			<li>
+				<a href="{{ path('circuits') }}" onmouseover="showHideLayers('descricao','Circuitos','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  		<img border="0" src="{{asset('bundles/cocar/images/circuitos.png')}}" align="middle">
+			  		<span>Circuitos</span>
+			  	</a>
+			</li>
+			<li>
+				<a href="{{ path('cocar_totalizer') }}" onmouseover="showHideLayers('descricao','Relatórios','show')" onmouseout="showHideLayers('descricao','','hide')"> 
+			  		<img border="0" src="{{asset('bundles/cocar/images/relatorios.png')}}" align="middle">
+			  		<span>Relatórios</span>
+			  	</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="search-box">
+		<form name='search' method='post' action='{{ path('cocar_map') }}'>
+		<input name='circuit' type='text' class='caixa' VALUE="Buscar por circuito" onfocus="this.value='';" />
+				<input type='button' value="Buscar" onClick='' style='cursor:hand;margin-left:5px' />
+		</form>
+		<!--<span>Digite o Nome da Unidade desejada.</span>-->
+	</div>
+	{% block search %}{% endblock %}
+</div>
+
+  <!--<table border="0" width="100%" bgcolor="#CCCC99" cellspacing="0" cellpadding="0">
     <tr>
       <td width="350" CLASS="sys"><b><i>COCAR: Controlador Centralizado do Ambiente de Rede</i></b></td>
       <td align="right" height="22" width="30%">
@@ -39,7 +81,7 @@
 	  </td>
       <td align="right" class="menu">
 		  	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
-                <a HREF="{{ path('cocar_map') }}" target="_top" onmouseover="showHideLayers('descricao','Página Inicial','show')" onmouseout="showHideLayers('descricao','','hide')">
+                <a href="{{ path('cocar_map') }}" target="_top" onmouseover="showHideLayers('descricao','Página Inicial','show')" onmouseout="showHideLayers('descricao','','hide')">
 				{% image '@CocarBundle/Resources/public/images/home.gif' %} 
                 	<img border="0" src="{{ asset_url }}" align="middle"></a>
                 {% endimage %} 
@@ -71,56 +113,8 @@
 		  	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
 	  </td>
     </tr>
-  </table>
-  <div class="box">
-	<table width='150' border='0' cellspacing='0' cellpadding='0'>
-		<tr>
-			{% image '@CocarBundle/Resources/public/images/boxverde_e.gif' %} 
-				<td width='1' align='right'><img border='0' src='{{ asset_url }}' width='5' height='25'></td>
-			{% endimage %}
-			{% image '@CocarBundle/Resources/public/images/boxverde_m.gif' %} 
-				<td background='{{ asset_url }}'  align='center' valign='middle' CLASS='thtt'><b>Buscar</b></td>
-			{% endimage %} 
-			{% image '@CocarBundle/Resources/public/images/boxverde_d.gif' %} 
-				<td width='5'><img src='{{ asset_url }}' width='5' height='25'></td>
-			{% endimage %} 
-		</tr>
-	</table>
+  </table>-->
 
-	<table width='150'  border='0' cellspacing='0' cellpadding='6' CLASS='laterais' bgcolor='#F3FAE9'>
-		<TR>
-			<TD>
-				<table width='100%'  border='0' cellspacing='0' cellpadding='0'>
-					<form name='search' method='post' action='{{ path('cocar_map') }}'>
-						<tr>
-							<td ALIGN='center'>
-								<input name='circuit' type='text' class='caixa' MAXLENGTH='22' VALUE="Buscar por circuito" onfocus="this.value='';">
-							</td>
-							<td align='left' margin-left=20px>
-								{% image '@CocarBundle/Resources/public/images/bt_ok.gif' %} 
-									<input type='image' src='{{ asset_url }}' onClick='' style='cursor:hand;margin-left:5px'>
-								{% endimage %} 
-							</td>
-						</tr>
-					</form>
-				</table>
-			</td>
-		</tr>
-	</table>
-	{% block search %}{% endblock %}
-
-	<table width='140' border='0' cellspacing='0' cellpadding='0'>
-		<tr>
-			<td align='center' valign='middle'>
-				<p align='center'>
-					<font size='2' face='Verdana, Arial, Helvetica, sans-serif'>
-						<B>Digite o Nome da Unidade desejada.</B>
-					</font>
-				</p>
-			</td>
-		</tr>
-	</table>
-  </div>
   <div class="main">
 		{% block main %}{% endblock %}
   </div>

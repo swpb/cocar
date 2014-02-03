@@ -2,16 +2,18 @@
 
 {% block main %}
 
-	<p align='center'><B>Totaliza&ccedil;&atilde;o de Desempenho</B></p>
+	<h2 class="general-title">Totaliza&ccedil;&atilde;o de Desempenho</h2>
 
 	<table width='550' cellspacing='2' cellpadding='1' CLASS='records_list' ALIGN="center">
-		<TR ALIGN='center' VALIGN='middle'>
-			<th width='130' HEIGHT="25">Organização</th>
-			<th width='110'>Tráfego Alto</th>
-			<th width='110'>Tráfego Baixo</th>
-			<th width='110'>Confiabilidade</th>
-			<th width='90'>Total</th>
-		</TR>
+		<thead>
+            <tr align='center' valign='middle'>
+                <th>Organização</th>
+                <th>Tráfego Alto</th>
+                <th>Tráfego Baixo</th>
+                <th>Confiabilidade</th>
+                <th>Total</th>
+            </tr>
+        </thead>
 		{% if circuits is defined %}
 			{% set total, t, high, without, rly = 0, 0, 0, 0, 0 %}
 			{% for key, cir in circuits %}
@@ -33,7 +35,7 @@
 			<th>{{ high }}</th>
 			<th>{{ without }}</th>
 			<th>{{ rly }}</th>
-			<th ALIGN='right'>{{ t }}/{{ total }}</th>
+			<th ALIGN='center'>{{ t }}/{{ total }}</th>
 		</TR>
 	</table>
 

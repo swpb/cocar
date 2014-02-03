@@ -1,32 +1,18 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <style type="text/css">
-    body
-        {
-            scrollbar-face-color: #FFFFFF;
-            scrollbar-shadow-color: #c0c0c0;
-            scrollbar-highlight-color: #FFFFFF;
-            scrollbar-3dlight-color: #c0c0c0;
-            scrollbar-darkshadow-color: #FFFFFF;
-            scrollbar-track-color: #ffffff;
-            scrollbar-arrow-color: #c0c0c0;
-            font-family: Verdana, Arial;
-            font-size: 10pt;
-        }
-    </style>
-    <center><h3>Cadastro de Circuitos</h3></center>
+    <h2 class="general-title">Cadastro de Circuitos</h2>
     <center>
-        <p>
+        <p class="description">
             Problemas ao cadastrar o circuito? Verifique a <a href="#help">tabela de configurações</a> ou faça o <a href="{{ path('cocar_snmpweb') }}">teste de snmp.</a>
         </p>
         <form action="{{ path('circuits_create') }}" method="post" {{ form_enctype(form) }}>
-            <table class="records_list" border=0 cellspacing=2 cellpadding=2>
+            <table class="records_list bodyView" border=0 cellspacing=2 cellpadding=2>
                 <tr>
                     {{ form_errors(form) }}
 
-                    <th> Código da Interface: </th>
-                    <td> {{ form_widget(form.codeInterface) }}</td>
+                    <th width="50%"> Código da Interface: </th>
+                    <td width="50%"> {{ form_widget(form.codeInterface) }}</td>
                 </tr>
                 <tr>
                     <th> Descrição do circuito: </th>
@@ -100,12 +86,8 @@
                     <th> IP da serial do roteador da ponta: </th>
                     <td> {{ form_widget(form.ipSerialRouterTip) }} </td>
                 </tr>
-                <tr>
-                    <td colspan="2" align="center">
-                        <button type="submit">Cadastrar</button>
-                    </td>
-                </tr>
             </table>
+            <button type="submit">Cadastrar</button>
             {{ form_widget(form._token) }}
         </form>
         {% image '@CocarBundle/Resources/public/images/help_circuit.jpg' %} 

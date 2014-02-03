@@ -116,7 +116,6 @@ class GraphController extends Controller
 	                ),
 			        'required' => true,
 	        ))
-	        ->add('send', 'submit', array('label' => 'Enviar' ))
 	        ->getForm();
     }
 
@@ -921,7 +920,6 @@ class GraphController extends Controller
 	        ->add('entity', 'hidden', array(
 	        		'data' => $id
 	        ))
-	        ->add('send', 'submit', array('label' => 'Enviar' ))
 	        ->getForm();
     }
 

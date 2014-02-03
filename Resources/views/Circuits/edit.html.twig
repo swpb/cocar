@@ -1,16 +1,16 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <h2>{{ entity.description }}</h2>
-
+    <h2 class="general-title">{{ entity.description }}</h2>
+    <center>
     <form action="{{ path('circuits_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
         <input type="hidden" name="_method" value="PUT" />
-        <table class="records_list" border=0 cellspacing=2 cellpadding=2>
+        <table class="records_list bodyView" border=0 cellspacing=2 cellpadding=2>
                 <tr>
                     {{ form_errors(edit_form) }}
 
-                    <th> Código da Interface: </th>
-                    <td> {{ form_widget(edit_form.codeInterface) }} </td>
+                    <th width="50%"> Código da Interface: </th>
+                    <td width="50%"> {{ form_widget(edit_form.codeInterface) }} </td>
                 </tr>
                 <tr>
                     <th> Descrição do circuito: </th>
@@ -84,14 +84,11 @@
                     <th> IP da serial do roteador da ponta: </th>
                     <td> {{ form_widget(edit_form.ipSerialRouterTip) }} </td>
                 </tr>
-                <tr>
-                    <td colspan="2" align="center">
-                        <button type="submit">Editar</button>
-                    </td>
-                </tr>
             </table>
+            <button type="submit">Editar</button>
             {{ form_widget(edit_form._token) }}
     </form>
+    </center>
 
         <ul class="record_actions">
     <li>
@@ -103,7 +100,7 @@
         <form action="{{ path('circuits_delete', { 'id': entity.id }) }}" method="post">
             <input type="hidden" name="_method" value="DELETE" />
             {{ form_widget(delete_form) }}
-            <button type="submit">Deletar</button>
+            <button type="submit" class="deletar">Deletar</button>
         </form>
     </li>
 </ul>

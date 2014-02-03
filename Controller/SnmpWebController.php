@@ -68,7 +68,6 @@ class SnmpWebController extends Controller
         return $this->createFormBuilder()
                 ->add('host', 'text')
                 ->add('community', 'text')
-                ->add('send', 'submit', array('label' => 'Enviar' ))
                 ->getForm();
     }
 }

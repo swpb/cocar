@@ -1,7 +1,7 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <h2>Entidades cadastradas</h2>
+    <h2 class="general-title">Entidades cadastradas</h2>
 
     <table class="records_list">
         <thead>
@@ -33,7 +33,7 @@
         </tbody>
     </table>
 
-        <ul>
+        <ul class="button">
         <li>
             <a href="{{ path('entity_new') }}">
                 Cadastrar uma nova entidade

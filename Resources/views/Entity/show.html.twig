@@ -1,42 +1,43 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <h2>Entidade</h2>
+    <h2 class="general-title">Entidade</h2>
 
     <table class="records_list">
-        <tbody>
+        <thead>
             <tr>
                 <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
                 <th>Identificador</th>
-                <td>{{ entity.identifier }}</td>
-            </tr>
-            <tr>
                 <th>Descrição</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>{{ entity.id }}</td>
+                <td>{{ entity.identifier }}</td>
                 <td>{{ entity.description }}</td>
             </tr>
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('entity') }}">
-           Lista de entidade
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('entity_edit', { 'id': entity.id }) }}">
-            Editar
-        </a>
-    </li>
-    <li>
-        <form action="{{ path('entity_delete', { 'id': entity.id }) }}" method="post">
-            <input type="hidden" name="_method" value="DELETE" />
-            {{ form_widget(delete_form) }}
-            <button type="submit">Deletar</button>
-        </form>
-    </li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('entity') }}">
+               Lista de entidade
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('entity_edit', { 'id': entity.id }) }}">
+                Editar
+            </a>
+        </li>
+        <li>
+            <form action="{{ path('entity_delete', { 'id': entity.id }) }}" method="post">
+                <input type="hidden" name="_method" value="DELETE" />
+                {{ form_widget(delete_form) }}
+                <button type="submit" class="deletar">Deletar</button>
+            </form>
+        </li>
+    </ul>
 {% endblock %}
