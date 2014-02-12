@@ -1,0 +1,46 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2 class="general-title">Impressora</h2>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Community</th>
+                <th>Host</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ entity.id }}</td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.description }}</td>
+                <td>{{ entity.communitySnmpPrinter }}</td>
+                <td>{{ entity.host }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('printer') }}">
+            Lista de impressoras
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('printer_edit', { 'id': entity.id }) }}">
+            Editar
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('printer_delete', { 'id': entity.id }) }}" method="post">
+            <input type="hidden" name="_method" value="DELETE" />
+            {{ form_widget(delete_form) }}
+            <button type="submit" class="deletar">Deletar</button>
+        </form>
+    </li>
+</ul>
+{% endblock %}

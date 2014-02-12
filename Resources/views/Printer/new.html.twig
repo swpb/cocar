@@ -1,0 +1,32 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2 class="general-title">Cadastro de Impressoras</h2>
+    <center>
+        <form action="{{ path('printer_create') }}" method="post" {{ form_enctype(form) }}>
+            <div class="records_list">
+                {{ form_errors(form) }}
+                {{ form_widget(form._token) }}
+                <div class="item-form">
+                    <label>Nome:</label>
+                    {{ form_widget(form.name) }}
+                </div>
+                <div class="item-form">
+                    <label>Descrição da impressora:</label>
+                    {{ form_widget(form.description) }}
+                </div>
+                <div class="item-form">
+                    <label>Community da impressora:</label>
+                    {{ form_widget(form.communitySnmpPrinter) }}
+                </div>
+                <div class="item-form">
+                    <label>Host:</label>
+                    {{ form_widget(form.host) }}
+                </div>
+                <div class="item-form">
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </div>
+        </form>
+    </center>
+{% endblock %}

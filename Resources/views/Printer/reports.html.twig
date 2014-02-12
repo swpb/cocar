@@ -1,0 +1,35 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2 class="general-title">{{ printer.name }}</h2>
+    <h2 class="general-title">{{ start|date("d/m/Y") }} a {{ end|date("d/m/Y") }}</h2>
+    <center>
+        <ul>
+            <li>
+                <form action="{{ path('cocar_printer_reports', {id: printer.id}) }}" method="post" {{ form_enctype(form) }}>
+                    {{ form_errors(form) }}
+                    {{ form_widget(form.startDate) }}
+                    {{ form_widget(form.endDate) }}
+                    <button type="submit">Enviar</button>
+                </form>
+            </li>
+        </ul>
+    </center>
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Total de impressões</th>
+                <th>Nível de tinta Preta</th>
+                <th>Nível de tinta Colorida</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for p in printerCounter %}
+                    <td>{{ p }}</td>
+                {% endfor %}
+            </tr>
+
+        </tbody>
+    </table>
+{% endblock %}

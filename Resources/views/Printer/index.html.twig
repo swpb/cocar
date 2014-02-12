@@ -1,0 +1,50 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2 class="general-title">Impressoras cadastradas</h2>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Community</th>
+                <th>Host</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('printer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.description }}</td>
+                <td>{{ entity.communitySnmpPrinter }}</td>
+                <td>{{ entity.host }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('cocar_printer_reports', { 'id': entity.id }) }}">Relatórios</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('printer_show', { 'id': entity.id }) }}">Visualizar</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('printer_edit', { 'id': entity.id }) }}">Editar</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul class="button">
+        <li>
+            <a href="{{ path('printer_new') }}">
+                Cadastrar uma nova impressora
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

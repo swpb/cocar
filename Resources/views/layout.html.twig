@@ -19,6 +19,12 @@
 			  	</a>
 			</li>
 			<li>
+				<a href="{{ path('printer') }}" onmouseover="showHideLayers('descricao','Impressoras','show')" onmouseout="showHideLayers('descricao','','hide')">
+			  		<img border="0" src="{{asset('bundles/cocar/images/impressoras.png')}}" align="middle">
+					<span>Impressoras</span>
+			  	</a>
+			</li>
+			<li>
 				<a href="{{ path('circuits') }}" onmouseover="showHideLayers('descricao','Circuitos','show')" onmouseout="showHideLayers('descricao','','hide')">
 			  		<img border="0" src="{{asset('bundles/cocar/images/circuitos.png')}}" align="middle">
 			  		<span>Circuitos</span>
@@ -82,7 +88,7 @@
       <td align="right" class="menu">
 		  	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
                 <a href="{{ path('cocar_map') }}" target="_top" onmouseover="showHideLayers('descricao','Página Inicial','show')" onmouseout="showHideLayers('descricao','','hide')">
-				{% image '@CocarBundle/Resources/public/images/home.gif' %} 
+				{% image '@CocarBundle/Resources/public/images/home.png' %} 
                 	<img border="0" src="{{ asset_url }}" align="middle"></a>
                 {% endimage %} 
         	<B><font face="Verdana" color=#ffffff size="2"> | </font><B>
