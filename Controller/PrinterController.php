@@ -328,7 +328,7 @@ class PrinterController extends Controller
     }
 
     /**
-    * @Route("/totalizer/info", name="cocar_totalizer_info")
+    * @Route("/totalizer/info", name="cocar_printer")
     * @Template()
     */
     public function totalizerAction()

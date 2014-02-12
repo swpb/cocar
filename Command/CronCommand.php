@@ -60,6 +60,11 @@ class CronCommand extends Command
                'graphdailyperform',
                null,
                InputOption::VALUE_NONE
+            )
+            ->addOption(
+               'printer',
+               null,
+               InputOption::VALUE_NONE
             );
     }
 
@@ -67,6 +72,8 @@ class CronCommand extends Command
     {
         $this->em = $this->getApplication()->getKernel()->getContainer()->get('doctrine')->getManager();
         
+        $return = null;
+
         if ($input->getOption('monitor')) {
             $return = $this->performTask('monitor');
         }
@@ -91,6 +98,9 @@ class CronCommand extends Command
         elseif($input->getOption('graphdailyperform')) {
             $return = $this->performTask('graphdailyperform');
         }
+        elseif($input->getOption('printer')) {
+            $return = $this->performTask('printer');
+        }
 
         $output->writeln($return);
     }
@@ -102,8 +112,7 @@ class CronCommand extends Command
             $r = file_get_contents($this->getApplication()->getKernel()->getContainer()->get('router')
                 ->generate("cocar_$task", array(), true));
 
-            echo $r;die;
-
+            /*
             if($task == 'monitor')
                 file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/monitor");
             elseif($task == 'status')
@@ -120,6 +129,9 @@ class CronCommand extends Command
                 file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/endalarm");
             elseif($task == 'graphdailyperform')
                 file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/graphdailyperform");
+            elseif($task == 'printer')
+                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/totalizer/info");
+            */
         }
         catch(Exception $e)
         {
