@@ -3,6 +3,7 @@
 {% block title 'Cocar' %}
 
 {% block stylesheets %}
+	{{ parent() }}
 	{% stylesheets filter='cssrewrite'
 		'bundles/cocar/css/*'
 	%}

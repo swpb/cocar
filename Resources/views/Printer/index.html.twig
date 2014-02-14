@@ -2,25 +2,38 @@
 
 {% block main -%}
     <h2 class="general-title">Impressoras cadastradas</h2>
-
+    <center>
+        <ul>
+            <li>
+                <form action="{{ path('printer_index') }}" method="get" {{ form_enctype(form) }}>
+                    {{ form_errors(form) }}
+                    {{ form_widget(form.startDate) }}
+                    {{ form_widget(form.endDate) }}
+                    <button type="submit">Enviar</button>
+                </form>
+            </li>
+        </ul>
+    </center>
     <table class="records_list">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Community</th>
+                <th>Impressões</th>
+                <th>Nome</th>
                 <th>Host</th>
-                <th>Actions</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
-        {% for entity in entities %}
+        {% for entity in printer %}
             <tr>
                 <td><a href="{{ path('printer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>
+                    {% if printerCounter[entity.id] is defined %}
+                        {{ printerCounter[entity.id]['prints'] }}
+                    {% endif %}
+                </td>
                 <td>{{ entity.name }}</td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.communitySnmpPrinter }}</td>
                 <td>{{ entity.host }}</td>
                 <td>
                 <ul>
@@ -39,8 +52,17 @@
         {% endfor %}
         </tbody>
     </table>
-
-        <ul class="button">
+    {% if displayAll == 0 %}
+        {{ knp_pagination_render(printer, "CocarBundle::pagination.html.twig") }} 
+        <div style="padding-top:30px">
+            <ul class="tsc_paginationB tsc_paginationB09">
+                <li>
+                    <a href="{{ path('printer_index', {all: true}) }}">Visualizar todas as impressoras</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+    <ul class="button">
         <li>
             <a href="{{ path('printer_new') }}">
                 Cadastrar uma nova impressora

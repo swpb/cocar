@@ -26,18 +26,73 @@ class PrinterController extends Controller
     /**
      * Lists all Printer entities.
      *
-     * @Route("/", name="printer")
+     * @Route("/", name="printer_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('CocarBundle:Printer')->findAll();
+        $form = $request->query->get('form');
 
+        if($form)
+        {
+            $start = new \DateTime($form['startDate']);
+            $start = $start->format('U');
+
+            $end = new \DateTime($form['endDate']);
+            $end = $end->format('U');
+        }
+
+        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+        $end   = isset($end) ? $end : time();
+
+        $printers = $em->getRepository('CocarBundle:Printer')->findAll();
+
+        $printerCounter = array();
+
+        foreach ($printers as $printer)
+        {
+            $printerCounter[$printer->getId()] = $em->createQuery(
+                            "SELECT pc.id, pc.prints, pc.blackInk, pc.coloredInk FROM CocarBundle:PrinterCounter pc
+                                WHERE (pc.date >= :start AND pc.date <= :end) AND (pc.printer = :id) 
+                                ORDER BY pc.id ASC"
+                        )
+                        ->setParameter('start', $start)
+                        ->setParameter('end', $end)
+                        ->setParameter('id', $printer->getId())
+                        ->getResult();
+        }
+
+        $pCounter = array();
+
+        foreach ($printerCounter as $key => $counter)
+        {
+            $size = sizeof($counter)-1;
+
+            if(isset($counter[$size]))
+            {
+                $pCounter[$key]['prints']     = $counter[$size]['prints'] - $counter[0]['prints'];
+                $pCounter[$key]['blackInk']   = $counter[$size]['blackInk'];
+                $pCounter[$key]['coloredInk'] = $counter[$size]['coloredInk'];
+            }
+        }
+
+        $displayAll = ($request->query->get('all')) ? $request->query->get('all') : 0;
+
+        if(!$displayAll)
+        {
+            $paginator = $this->get('knp_paginator');
+            $printers  = $paginator->paginate($printers, $this->get('request')->query->get('page', 1), 10);
+        }
         return array(
-            'entities' => $entities,
+            "printer" => $printers,
+            "printerCounter" => $pCounter,
+            "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
+            "start" => $start,
+            "end" => $end,
+            "displayAll" => $displayAll
         );
     }
     /**
@@ -258,12 +313,14 @@ class PrinterController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $form = $request->request->get('form');
+
         if($request->request->get('form'))
         {
-            $start = new \DateTime($request->request->get('form')['startDate']);
+            $start = new \DateTime($form['startDate']);
             $start = $start->format('U');
 
-            $end = new \DateTime($request->request->get('form')['endDate']);
+            $end = new \DateTime($form['endDate']);
             $end = $end->format('U');
         }
 
@@ -282,23 +339,16 @@ class PrinterController extends Controller
 
         $pCounter = array();
 
+        $size = sizeof($printerCounter)-1;
+
         foreach ($printerCounter as $counter)
         {
-            if($counter === reset($printerCounter))
-            {
-                $pCounter['prints'] = $counter['prints'];
-            }
-
-            if ($counter === end($printerCounter))
-            {
-                $pCounter['prints'] = $counter['prints'] - $pCounter['prints'];
-                $pCounter['blackInk'] = $counter['blackInk'];
-                $pCounter['coloredInk'] = $counter['coloredInk'];
-            }
+            $pCounter['prints'] = $printerCounter[$size]['prints'] - $printerCounter[0]['prints'];
+            $pCounter['blackInk'] = $counter['blackInk'];
+            $pCounter['coloredInk'] = $counter['coloredInk'];
         }
 
         $printer = $em->getRepository('CocarBundle:Printer')->find($id);
-
 
         return array(
             "printer" => $printer,
