@@ -1,9 +1,9 @@
 {
-    "name": "swpb/cocar",
+    "name": "lightbase/cocar",
     "version": "1.0",
-    "license": "MIT",
+    "license": "CC-GPL 2.0",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "COCAR",
     "autoload": {
 	"psr-0": { "Swpb\\Bundle\\CocarBundle": "" }
     },
