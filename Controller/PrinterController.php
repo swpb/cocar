@@ -398,7 +398,7 @@ class PrinterController extends Controller
                 $host = $printer->getHost();
 
                 $com = "snmpwalk -O qv -v 1 -c $community $host 1.3.6.1.2.1.43.10.2.1.4.1.1";
-                $this->updateCounter($printer, '122');
+
                 if($outPut = shell_exec($com))
                 {
                     $this->updateCounter($printer, $outPut);
