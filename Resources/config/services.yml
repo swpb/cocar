@@ -14,3 +14,6 @@ services:
         class: Swpb\Bundle\CocarBundle\Controller\MonitorController
     circuit:
         class: Swpb\Bundle\CocarBundle\Entity\Circuits
+    printer:
+        class: Swpb\Bundle\CocarBundle\Controller\PrinterController
+        arguments: ["@doctrine.orm.entity_manager"]

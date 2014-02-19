@@ -2,13 +2,13 @@
 
 namespace Swpb\Bundle\CocarBundle\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
-class CronCommand extends Command
+class CronCommand extends ContainerAwareCommand
 {
     /**
      *
@@ -109,29 +109,29 @@ class CronCommand extends Command
     {
         try
         {
-            $r = file_get_contents($this->getApplication()->getKernel()->getContainer()->get('router')
-                ->generate("cocar_$task", array(), true));
+            #$r = file_get_contents($this->getApplication()->getKernel()->getContainer()->get('router')
+            #    ->generate("cocar_$task", array(), true));
 
-            /*
+            
             if($task == 'monitor')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/monitor");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/monitor");
             elseif($task == 'status')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/status");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/status");
             elseif($task == 'reliability')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/reliability");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/reliability");
             elseif($task == 'rrdlog')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/rrdlog");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/rrdlog");
             elseif($task == 'dailyperform')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/dailyperform");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/dailyperform");
             elseif($task == 'generatealarm')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/generatealarm");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/generatealarm");
             elseif($task == 'endalarm')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/endalarm");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/endalarm");
             elseif($task == 'graphdailyperform')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/graphdailyperform");
+                file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/graphdailyperform");
             elseif($task == 'printer')
-                file_get_contents("http://localhost/projeto-cocar/web/app_dev.php/cocar/totalizer/info");
-            */
+                $this->getContainer()->get('printer')->totalizer();
+            
         }
         catch(Exception $e)
         {
