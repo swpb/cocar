@@ -82,7 +82,8 @@ class PrinterController extends Controller
 
             if(isset($counter[$size]))
             {
-                $pCounter[$key]['prints']     = $counter[$size]['prints'] - $counter[0]['prints'];
+                $pCounter[$key]['prints'] = ($size == 0) ?
+                    $counter[$size]['prints'] : $counter[$size]['prints'] - $counter[0]['prints'];
                 $pCounter[$key]['blackInk']   = $counter[$size]['blackInk'];
                 $pCounter[$key]['coloredInk'] = $counter[$size]['coloredInk'];
             }

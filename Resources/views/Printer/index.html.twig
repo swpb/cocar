@@ -31,6 +31,8 @@
                 <td>
                     {% if printerCounter[entity.id] is defined %}
                         {{ printerCounter[entity.id]['prints'] }}
+                    {% else %}
+                        0
                     {% endif %}
                 </td>
                 <td>{{ entity.name }}</td>
