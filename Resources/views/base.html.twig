@@ -1,6 +1,12 @@
 {% extends '::base.html.twig' %}
 
-{% block title 'Cocar' %}
+{% block meta %}
+
+    <title>{{ "COCAR"|trans }}</title>
+    <meta name="description" content="{{ 'COCAR - Configurador e Coletor de Ativos de Rede'|trans }}">
+    <meta name="ahoekie" content="CACIC BackEnd">
+
+{% endblock %}
 
 {% block stylesheets %}
 	{{ parent() }}
