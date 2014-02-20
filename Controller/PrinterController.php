@@ -15,6 +15,8 @@ use Swpb\Bundle\CocarBundle\Entity\Printer;
 use Swpb\Bundle\CocarBundle\Entity\PrinterCounter;
 use Swpb\Bundle\CocarBundle\Form\PrinterType;
 
+use Doctrine\ORM\EntityManager;
+
 /**
  * Printer controller.
  *
@@ -22,6 +24,13 @@ use Swpb\Bundle\CocarBundle\Form\PrinterType;
  */
 class PrinterController extends Controller
 {
+
+    private $em;
+
+    public function __construct(EntityManager $em = null)
+    {
+        $this->em = $em;
+    }  
 
     /**
      * Lists all Printer entities.
@@ -73,7 +82,8 @@ class PrinterController extends Controller
 
             if(isset($counter[$size]))
             {
-                $pCounter[$key]['prints']     = $counter[$size]['prints'] - $counter[0]['prints'];
+                $pCounter[$key]['prints'] = ($size == 0) ?
+                    $counter[$size]['prints'] : $counter[$size]['prints'] - $counter[0]['prints'];
                 $pCounter[$key]['blackInk']   = $counter[$size]['blackInk'];
                 $pCounter[$key]['coloredInk'] = $counter[$size]['coloredInk'];
             }
@@ -377,15 +387,9 @@ class PrinterController extends Controller
             ->getForm();
     }
 
-    /**
-    * @Route("/totalizer/info", name="cocar_printer")
-    * @Template()
-    */
-    public function totalizerAction()
+    public function totalizer()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $printers = $em->getRepository('CocarBundle:Printer')->findAll();
+        $printers = $this->em->getRepository('CocarBundle:Printer')->findAll();
 
         foreach($printers as $printer)
         {
@@ -399,12 +403,12 @@ class PrinterController extends Controller
                 if($outPut = shell_exec($com))
                 {
                     $this->updateCounter($printer, $outPut);
-                    $this->createOrUpdateGraph($printer, $outPut);
+                    #$this->createOrUpdateGraph($printer, $outPut);
                 }
             }
             catch(Exception $e)
             {
-                return new Response($e->getMessage());
+                #return new Response($e->getMessage());
             }
         }
         return new Response();
@@ -417,16 +421,14 @@ class PrinterController extends Controller
     {
         try
         {
-            $em = $this->getDoctrine()->getManager();
-
             $counter = new PrinterCounter;
 
             $counter->setPrinter($printer);
             $counter->setPrints($prints);
             $counter->setDate(time());
 
-            $em->persist($counter);
-            $em->flush();
+            $this->em->persist($counter);
+            $this->em->flush();
         }
         catch(\Exception $e)
         {
