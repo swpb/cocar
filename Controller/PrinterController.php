@@ -51,13 +51,13 @@ class PrinterController extends Controller
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
-            $end = $end->format('U');
+            $end = $end->format('U') + 86399;
         }
 
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
-        $end   = isset($end) ? $end : time();
-
-        $printers = $em->getRepository('CocarBundle:Printer')->findAll();
+        $end   = isset($end) ? $end : time() ;
+        
+	$printers = $em->getRepository('CocarBundle:Printer')->findAll();
 
         $printerCounter = array();
 
@@ -82,14 +82,13 @@ class PrinterController extends Controller
 
             if(isset($counter[$size]))
             {
-                $pCounter[$key]['prints'] = ($size == 0) ?
-                    $counter[$size]['prints'] : $counter[$size]['prints'] - $counter[0]['prints'];
+                $pCounter[$key]['prints'] = (!$form) ? $counter[$size]['prints'] : $counter[$size]['prints'] - $counter[0]['prints'];
                 $pCounter[$key]['blackInk']   = $counter[$size]['blackInk'];
                 $pCounter[$key]['coloredInk'] = $counter[$size]['coloredInk'];
             }
         }
-
-        $displayAll = ($request->query->get('all')) ? $request->query->get('all') : 0;
+        
+	$displayAll = ($request->query->get('all')) ? $request->query->get('all') : 0;
 
         if(!$displayAll)
         {
@@ -331,7 +330,7 @@ class PrinterController extends Controller
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
-            $end = $end->format('U');
+            $end = $end->format('U') + 86399;
         }
 
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
@@ -353,7 +352,7 @@ class PrinterController extends Controller
 
         foreach ($printerCounter as $counter)
         {
-            $pCounter['prints'] = $printerCounter[$size]['prints'] - $printerCounter[0]['prints'];
+            $pCounter['prints'] = (!$form ) ?  $printerCounter[$size]['prints'] : $printerCounter[$size]['prints'] - $printerCounter[0]['prints'];
             $pCounter['blackInk'] = $counter['blackInk'];
             $pCounter['coloredInk'] = $counter['coloredInk'];
         }
