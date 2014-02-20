@@ -79,7 +79,7 @@ Instalação:
 Depois rode os comandos abaixo 
  
 	php app/console assetic:dump
-        php app/console assets:install
+        php app/console assets:install --symlink
 
 7 – Adicione os agendamentos ao cron.
 
