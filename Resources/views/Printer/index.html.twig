@@ -10,6 +10,7 @@
                     {{ form_widget(form.startDate) }}
                     {{ form_widget(form.endDate) }}
                     <button type="submit">Enviar</button>
+                    <button type="submit" formaction="{{ path('printer_csv') }}">Gerar CSV</button>
                 </form>
             </li>
         </ul>
@@ -18,9 +19,13 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Impressões</th>
                 <th>Nome</th>
                 <th>Host</th>
+                <th>Contador Inicial</th>
+                <th>Data Inicial</th>
+                <th>Contador Final</th>
+                <th>Data Final</th>
+                <th>Impressões</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -28,20 +33,15 @@
         {% for entity in printer %}
             <tr>
                 <td><a href="{{ path('printer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>
-                    {% if printerCounter[entity.id] is defined %}
-                        {{ printerCounter[entity.id]['prints'] }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </td>
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.host }}</td>
+                <td>{{ entity.printsStart }}</td>
+                <td>{{ entity.startDate|date("d/m/Y") }}</td>
+                <td>{{ entity.printsEnd }}</td>
+                <td>{{ entity.endDate|date("d/m/Y") }}</td>
+                <td>{{ (entity.printsEnd - entity.printsStart) }}</td>
                 <td>
                 <ul>
-                    <li>
-                        <a href="{{ path('cocar_printer_reports', { 'id': entity.id }) }}">Relatórios</a>
-                    </li>
                     <li>
                         <a href="{{ path('printer_show', { 'id': entity.id }) }}">Visualizar</a>
                     </li>

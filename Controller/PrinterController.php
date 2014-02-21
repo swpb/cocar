@@ -13,9 +13,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Swpb\Bundle\CocarBundle\Entity\Printer;
 use Swpb\Bundle\CocarBundle\Entity\PrinterCounter;
+use Swpb\Bundle\CocarBundle\Entity\PrinterCounterRepository;
 use Swpb\Bundle\CocarBundle\Form\PrinterType;
 
+use Ddeboer\DataImport\Workflow;
+use Ddeboer\DataImport\Reader\ArrayReader;
+use Ddeboer\DataImport\Writer\CsvWriter;
+use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
+
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 /**
  * Printer controller.
@@ -57,6 +67,8 @@ class PrinterController extends Controller
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
         $end   = isset($end) ? $end : time();
 
+        /*
+
         $printers = $em->getRepository('CocarBundle:Printer')->findAll();
 
         $printerCounter = array();
@@ -90,6 +102,10 @@ class PrinterController extends Controller
         }
 
         $displayAll = ($request->query->get('all')) ? $request->query->get('all') : 0;
+        */
+        $displayAll = true;
+
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end);
 
         if(!$displayAll)
         {
@@ -98,13 +114,73 @@ class PrinterController extends Controller
         }
         return array(
             "printer" => $printers,
-            "printerCounter" => $pCounter,
+            //"printerCounter" => $pCounter,
             "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
             "start" => $start,
             "end" => $end,
             "displayAll" => $displayAll
         );
     }
+
+    /**
+     * Generate a CSV file
+     *
+     * @Route("/csv", name="printer_csv")
+     *
+     */
+    public function csvAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $request->query->get('form');
+
+        if($form)
+        {
+            $start = new \DateTime($form['startDate']);
+            $start = $start->format('U');
+
+            $end = new \DateTime($form['endDate']);
+            $end = $end->format('U');
+        }
+
+        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+        $end   = isset($end) ? $end : time();
+
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioCsvGeral($start, $end);
+
+        // Gera CSV
+        $reader = new ArrayReader($printers);
+
+        // Create the workflow from the reader
+        $workflow = new Workflow($reader);
+
+
+        // As you can see, the first names are not capitalized correctly. Let's fix
+        // that with a value converter:
+        $converter = new CallbackValueConverter(function ($input) {
+            return date('d/m/Y', $input);
+        });
+        $workflow->addValueConverter('endDate', $converter);
+        $workflow->addValueConverter('startDate', $converter);
+
+        // Add the writer to the workflow
+        $tmpfile = tempnam(sys_get_temp_dir(), 'impressoras');
+        $file = new \SplFileObject($tmpfile, 'w');
+        $writer = new CsvWriter($file);
+        $workflow->addWriter($writer);
+
+        // Process the workflow
+        $workflow->process();
+
+        // Retorna o arquivo
+        $response = new BinaryFileResponse($tmpfile);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="impressoras.csv"');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+
+        return $response;
+    }
+
     /**
      * Creates a new Printer entity.
      *

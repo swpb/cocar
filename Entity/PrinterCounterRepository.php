@@ -12,4 +12,77 @@ use Doctrine\ORM\EntityRepository;
  */
 class PrinterCounterRepository extends EntityRepository
 {
+    /**
+     * Classe do relatório geral de impressão
+     *
+     * @param $start
+     * @param $end
+     * @return array
+     */
+    public function relatorioGeral($start, $end) {
+
+
+        $_dql = "SELECT printer.id,
+                        max(pc1.prints) as printsEnd,
+                        pc1.blackInk,
+                        pc1.coloredInk,
+                        max(pc1.date) as endDate,
+                        min(pc2.prints) as printsStart,
+                        min(pc2.date) as startDate,
+                        printer.name,
+                        printer.description,
+                        printer.host
+                 FROM CocarBundle:PrinterCounter pc1
+                 INNER JOIN CocarBundle:Printer printer WITH pc1.printer = printer.id
+                 INNER JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
+                 WHERE pc1.date <= :end
+                 GROUP BY printer.id,
+                        pc1.blackInk,
+                        pc1.coloredInk,
+                        printer.name,
+                        printer.description,
+                        printer.host
+                 ORDER BY printer.id ASC";
+
+        return $this->getEntityManager()->createQuery( $_dql )
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getArrayResult();
+
+    }
+
+    /**
+     * Classe do relatório geral de impressão no formato CSV
+     *
+     * @param $start
+     * @param $end
+     * @return array
+     */
+    public function relatorioCsvGeral($start, $end) {
+
+
+        $_dql = "SELECT printer.id,
+                        max(pc1.prints) as printsEnd,
+                        max(pc1.date) as endDate,
+                        min(pc2.prints) as printsStart,
+                        min(pc2.date) as startDate,
+                        printer.name,
+                        printer.host,
+                        (max(pc1.prints) - min(pc2.prints)) as totalPrints
+                 FROM CocarBundle:PrinterCounter pc1
+                 INNER JOIN CocarBundle:Printer printer WITH pc1.printer = printer.id
+                 INNER JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
+                 WHERE pc1.date <= :end
+                 GROUP BY printer.id,
+                        printer.name,
+                        printer.description,
+                        printer.host
+                 ORDER BY printer.id ASC";
+
+        return $this->getEntityManager()->createQuery( $_dql )
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getArrayResult();
+
+    }
 }

@@ -10,7 +10,8 @@
     "target-dir": "Swpb/Bundle/CocarBundle",
     "require": {
         "php": ">=5.3.2",
-	"jpgraph/jpgraph": "dev-master"
+	"jpgraph/jpgraph": "dev-master",
+	"ddeboer/data-import-bundle": "dev-master"
     },
     "config": {
         "bin-dir": "bin"
