@@ -32,10 +32,11 @@ class PrinterCounterRepository extends EntityRepository
                         printer.name,
                         printer.description,
                         printer.host
-                 FROM CocarBundle:PrinterCounter pc1
-                 INNER JOIN CocarBundle:Printer printer WITH pc1.printer = printer.id
-                 INNER JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
+                 FROM CocarBundle:Printer printer
+                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH pc1.printer = printer.id
+                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
                  WHERE pc1.date <= :end
+                 OR pc1.date IS NULL
                  GROUP BY printer.id,
                         pc1.blackInk,
                         pc1.coloredInk,
@@ -69,10 +70,11 @@ class PrinterCounterRepository extends EntityRepository
                         printer.name,
                         printer.host,
                         (max(pc1.prints) - min(pc2.prints)) as totalPrints
-                 FROM CocarBundle:PrinterCounter pc1
-                 INNER JOIN CocarBundle:Printer printer WITH pc1.printer = printer.id
-                 INNER JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
+                 FROM CocarBundle:Printer printer
+                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH pc1.printer = printer.id
+                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
                  WHERE pc1.date <= :end
+                 OR pc1.date IS NULL
                  GROUP BY printer.id,
                         printer.name,
                         printer.description,

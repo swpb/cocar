@@ -22,6 +22,8 @@
                 <div class="item-form">
                     <label>Host:</label>
                     {{ form_widget(form.host) }}
+                    <br>
+                    {{ form_errors(form.host) }}
                 </div>
                 <div class="item-form">
                     <button type="submit">Cadastrar</button>
