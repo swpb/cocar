@@ -1,4 +1,4 @@
 CocarBundle_cocar_annotation:
     resource: "@CocarBundle/Controller"
-    prefix: /cocar
+    prefix: /
     type: annotation

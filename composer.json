@@ -1,16 +1,17 @@
 {
-    "name": "swpb/cocar",
+    "name": "lightbase/cocar",
     "version": "1.0",
-    "license": "MIT",
+    "license": "CC-GPL 2.0",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "COCAR",
     "autoload": {
 	"psr-0": { "Swpb\\Bundle\\CocarBundle": "" }
     },
     "target-dir": "Swpb/Bundle/CocarBundle",
     "require": {
         "php": ">=5.3.2",
-	"jpgraph/jpgraph": "dev-master"
+	"jpgraph/jpgraph": "dev-master",
+	"ddeboer/data-import-bundle": "dev-master"
     },
     "config": {
         "bin-dir": "bin"
