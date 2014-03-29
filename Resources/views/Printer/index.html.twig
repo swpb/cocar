@@ -36,9 +36,17 @@
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.host }}</td>
                 <td>{{ entity.printsStart }}</td>
-                <td>{{ entity.startDate|date("d/m/Y") }}</td>
+                {% if entity.startDate %}
+                    <td>{{ entity.startDate|date("d/m/Y") }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
                 <td>{{ entity.printsEnd }}</td>
-                <td>{{ entity.endDate|date("d/m/Y") }}</td>
+                {% if entity.endDate %}
+                    <td>{{ entity.endDate|date("d/m/Y") }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
                 <td>{{ (entity.printsEnd - entity.printsStart) }}</td>
                 <td>
                 <ul>

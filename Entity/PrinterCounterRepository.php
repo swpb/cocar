@@ -23,20 +23,18 @@ class PrinterCounterRepository extends EntityRepository
 
 
         $_dql = "SELECT printer.id,
-                        max(pc1.prints) as printsEnd,
                         pc1.blackInk,
                         pc1.coloredInk,
                         max(pc1.date) as endDate,
-                        min(pc2.prints) as printsStart,
+                        max(pc1.prints) as printsEnd,
                         min(pc2.date) as startDate,
+                        min(pc2.prints) as printsStart,
                         printer.name,
                         printer.description,
                         printer.host
                  FROM CocarBundle:Printer printer
-                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH pc1.printer = printer.id
-                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
-                 WHERE pc1.date <= :end
-                 OR pc1.date IS NULL
+                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
+                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc2.printer = printer.id AND pc2.date BETWEEN :start AND :end)
                  GROUP BY printer.id,
                         pc1.blackInk,
                         pc1.coloredInk,
@@ -71,10 +69,8 @@ class PrinterCounterRepository extends EntityRepository
                         printer.host,
                         (max(pc1.prints) - min(pc2.prints)) as totalPrints
                  FROM CocarBundle:Printer printer
-                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH pc1.printer = printer.id
-                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc1.printer = pc2.printer AND pc2.date >= :start)
-                 WHERE pc1.date <= :end
-                 OR pc1.date IS NULL
+                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
+                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc2.printer = printer.id AND pc2.date BETWEEN :start AND :end)
                  GROUP BY printer.id,
                         printer.name,
                         printer.description,
