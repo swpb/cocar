@@ -25,8 +25,6 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-
 /**
  * Printer controller.
  *
@@ -106,12 +104,12 @@ class PrinterController extends Controller
         $displayAll = true;
 
         $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end);
-
         if(!$displayAll)
         {
             $paginator = $this->get('knp_paginator');
             $printers  = $paginator->paginate($printers, $this->get('request')->query->get('page', 1), 10);
         }
+
         return array(
             "printer" => $printers,
             //"printerCounter" => $pCounter,
@@ -120,6 +118,7 @@ class PrinterController extends Controller
             "end" => $end,
             "displayAll" => $displayAll
         );
+
     }
 
     /**
@@ -258,7 +257,6 @@ class PrinterController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('CocarBundle:Printer')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Printer entity.');
         }

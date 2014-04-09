@@ -19,6 +19,8 @@ class PrinterType extends AbstractType
             ->add('description')
             ->add('communitySnmpPrinter')
             ->add('host')
+            ->add('serie')
+            ->add('local')
         ;
     }
     

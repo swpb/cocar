@@ -56,6 +56,20 @@ class Printer
     private $host;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="serie", type="text", nullable=true)
+     */
+    private $serie;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local", type="text", nullable=true)
+     */
+    private $local;
+
+    /**
      * Construct
      */
     public function __construct()
@@ -163,6 +177,52 @@ class Printer
     public function getHost()
     {
         return $this->host;
+    }
+
+    /**
+     * Set serie
+     *
+     * @param string $serie
+     * @return Printer
+     */
+    public function setSerie($serie)
+    {
+        $this->serie = $serie;
+
+        return $this;
+    }
+
+    /**
+     * Get serie
+     *
+     * @return string
+     */
+    public function getSerie()
+    {
+        return $this->serie;
+    }
+
+    /**
+     * Set local
+     *
+     * @param string $local
+     * @return Printer
+     */
+    public function setLocal($local)
+    {
+        $this->local = $local;
+
+        return $this;
+    }
+
+    /**
+     * Get local
+     *
+     * @return string
+     */
+    public function getLocal()
+    {
+        return $this->local;
     }
 
     /**
