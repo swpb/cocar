@@ -49,6 +49,9 @@ class PrinterController extends Controller
      */
     public function indexAction(Request $request)
     {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
         $em = $this->getDoctrine()->getManager();
 
         $form = $request->query->get('form');
@@ -65,42 +68,109 @@ class PrinterController extends Controller
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
         $end   = isset($end) ? $end : time();
 
-        /*
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end);
 
-        $printers = $em->getRepository('CocarBundle:Printer')->findAll();
+        return array(
+            "printer" => $printers,
+            //"printerCounter" => $pCounter,
+            "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
+            "start" => $start,
+            "end" => $end
+        );
 
-        $printerCounter = array();
+    }
 
-        foreach ($printers as $printer)
+    /**
+     * Generate a CSV file
+     *
+     * @Route("/csv", name="printer_csv")
+     *
+     */
+    public function csvAction(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $request->query->get('form');
+
+        if($form)
         {
-            $printerCounter[$printer->getId()] = $em->createQuery(
-                            "SELECT pc.id, pc.prints, pc.blackInk, pc.coloredInk FROM CocarBundle:PrinterCounter pc
-                                WHERE (pc.date >= :start AND pc.date <= :end) AND (pc.printer = :id) 
-                                ORDER BY pc.id ASC"
-                        )
-                        ->setParameter('start', $start)
-                        ->setParameter('end', $end)
-                        ->setParameter('id', $printer->getId())
-                        ->getResult();
+            $start = new \DateTime($form['startDate']);
+            $start = $start->format('U');
+
+            $end = new \DateTime($form['endDate']);
+            $end = $end->format('U');
         }
 
-        $pCounter = array();
+        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+        $end   = isset($end) ? $end : time();
 
-        foreach ($printerCounter as $key => $counter)
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioCsvGeral($start, $end);
+
+        // Gera CSV
+        $reader = new ArrayReader($printers);
+
+        // Create the workflow from the reader
+        $workflow = new Workflow($reader);
+
+
+        // As you can see, the first names are not capitalized correctly. Let's fix
+        // that with a value converter:
+        //$converter = new CallbackValueConverter(function ($input) {
+        //    return date('d/m/Y', $input);
+        //});
+        //$workflow->addValueConverter('endDate', $converter);
+        //$workflow->addValueConverter('startDate', $converter);
+
+        // Add the writer to the workflow
+        $tmpfile = tempnam(sys_get_temp_dir(), 'impressoras');
+        $file = new \SplFileObject($tmpfile, 'w');
+        $writer = new CsvWriter($file);
+        $workflow->addWriter($writer);
+
+        // Process the workflow
+        $workflow->process();
+
+        // Retorna o arquivo
+        $response = new BinaryFileResponse($tmpfile);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="impressoras.csv"');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+
+        return $response;
+    }
+
+    /**
+     * Lists all Printer entities.
+     *
+     * @Route("/detalhado", name="printer_index_detalhado")
+     * @Method("GET")
+     * @Template()
+     */
+    public function indexDetalhadoAction(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $request->query->get('form');
+
+        if($form)
         {
-            $size = sizeof($counter)-1;
+            $start = new \DateTime($form['startDate']);
+            $start = $start->format('U');
 
-            if(isset($counter[$size]))
-            {
-                $pCounter[$key]['prints'] = ($size == 0) ?
-                    $counter[$size]['prints'] : $counter[$size]['prints'] - $counter[0]['prints'];
-                $pCounter[$key]['blackInk']   = $counter[$size]['blackInk'];
-                $pCounter[$key]['coloredInk'] = $counter[$size]['coloredInk'];
-            }
+            $end = new \DateTime($form['endDate']);
+            $end = $end->format('U');
         }
 
-        $displayAll = ($request->query->get('all')) ? $request->query->get('all') : 0;
-        */
+        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+        $end   = isset($end) ? $end : time();
+
+
         $displayAll = true;
 
         $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end);
@@ -124,11 +194,14 @@ class PrinterController extends Controller
     /**
      * Generate a CSV file
      *
-     * @Route("/csv", name="printer_csv")
+     * @Route("/detalhado/csv", name="printer_csv_detalhado")
      *
      */
-    public function csvAction(Request $request)
+    public function csvDetalhadoAction(Request $request)
     {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
         $em = $this->getDoctrine()->getManager();
 
         $form = $request->query->get('form');
@@ -145,7 +218,7 @@ class PrinterController extends Controller
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
         $end   = isset($end) ? $end : time();
 
-        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioCsvGeral($start, $end);
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioCsvGeralDetalhado($start, $end);
 
         // Gera CSV
         $reader = new ArrayReader($printers);
