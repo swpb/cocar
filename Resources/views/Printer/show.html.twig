@@ -29,6 +29,11 @@
     </table>
 
         <ul class="record_actions">
+            <li>
+                {% set params = app.request.attributes.get('_route_params') %}
+                {% set params = params|merge({'show_log': '1'}) %}
+                <a href="{{ path(app.request.attributes.get('_route'), params) }}" title="{{ 'Visualizar log de impressão'|trans }}">{{ 'Log de impressão'|trans }}</a>
+            </li>
     <li>
         <a href="{{ path('printer_index') }}">
             Lista de impressoras
@@ -47,4 +52,28 @@
         </form>
     </li>
 </ul>
+    {% if app.request.get('show_log') %}
+        <br>
+        <br>
+        <table class="records_list">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Data</th>
+                <th>Contador</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reg in log %}
+            <tr>
+                <td>{{ reg.id }}</td>
+                <td>{{ reg.date|date }}</td>
+                <td>{{ reg.prints }}</td>
+            </tr>
+            {% else %}
+                <tr><td colspan="5">Registros não encontrados</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}

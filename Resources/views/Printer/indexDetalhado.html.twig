@@ -1,36 +1,20 @@
 {% extends 'CocarBundle::layout.html.twig' %}
 
 {% block main -%}
-    <h2 class="general-title">{{ "Impressoras Cadastradas"|trans }}</h2>
+    <h2 class="general-title">Impressoras cadastradas</h2>
     <center>
         <ul>
             <li>
-                <form action="{{ path('printer_index') }}" method="get" {{ form_enctype(form) }}>
+                <form action="{{ path('printer_index_detalhado') }}" method="get" {{ form_enctype(form) }}>
                     {{ form_errors(form) }}
                     {{ form_widget(form.startDate) }}
                     {{ form_widget(form.endDate) }}
-                    <button type="submit">{{ "Enviar"|trans }}</button>
-                    <button type="submit" formaction="{{ path('printer_csv') }}">{{ "Gerar CSV"|trans }}</button>
-                    <button type="submit" formaction="{{ path('printer_index_detalhado') }}">{{ "Relatório detalhado"|trans }}</button>
+                    <button type="submit">Enviar</button>
+                    <button type="submit" formaction="{{ path('printer_csv_detalhado') }}">Gerar CSV</button>
                 </form>
             </li>
         </ul>
     </center>
-    <br>
-    <div class="row-fluid">
-        <div class="span12 flat_box">
-            <div class="padding_20">
-                <p>{{ "Relatório de impressão"|trans }}</p>
-                <br>
-                <p>
-                    <ul>
-                        <li><b>{{ "Data Inicial"|trans }}</b>: {{ start|date }}</li>
-                        <li><b>{{ "Data Final"|trans }}</b>: {{ end|date }}</li>
-                    </ul>
-                </p>
-            </div>
-        </div>
-    </div>
     <table class="records_list">
         <thead>
             <tr>
@@ -39,6 +23,10 @@
                 <th>Host</th>
                 <th>Serie</th>
                 <th>Local</th>
+                <th>Contador Inicial</th>
+                <th>Data Inicial</th>
+                <th>Contador Final</th>
+                <th>Data Final</th>
                 <th>Impressões</th>
                 <th>Ações</th>
             </tr>
@@ -51,6 +39,18 @@
                 <td>{{ entity.host }}</td>
                 <td>{{ entity.serie }}</td>
                 <td>{{ entity.local }}</td>
+                <td>{{ entity.printsStart }}</td>
+                {% if entity.startDate %}
+                    <td>{{ entity.startDate|date("d/m/Y") }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ entity.printsEnd }}</td>
+                {% if entity.endDate %}
+                    <td>{{ entity.endDate|date("d/m/Y") }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
                 <td>{{ (entity.printsEnd - entity.printsStart) }}</td>
                 <td>
                 <ul>
@@ -66,6 +66,16 @@
         {% endfor %}
         </tbody>
     </table>
+    {% if displayAll == 0 %}
+        {{ knp_pagination_render(printer, "CocarBundle::pagination.html.twig") }} 
+        <div style="padding-top:30px">
+            <ul class="tsc_paginationB tsc_paginationB09">
+                <li>
+                    <a href="{{ path('printer_index', {all: true}) }}">Visualizar todas as impressoras</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
     <ul class="button">
         <li>
             <a href="{{ path('printer_new') }}">

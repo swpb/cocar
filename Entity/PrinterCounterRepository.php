@@ -66,6 +66,40 @@ class PrinterCounterRepository extends EntityRepository
 
 
         $_dql = "SELECT printer.id,
+                        printer.name,
+                        printer.host,
+                        printer.serie,
+                        printer.local,
+                        (max(pc1.prints) - min(pc2.prints)) as totalPrints
+                 FROM CocarBundle:Printer printer
+                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
+                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc2.printer = printer.id AND pc2.date BETWEEN :start AND :end)
+                 GROUP BY printer.id,
+                        printer.name,
+                        printer.description,
+                        printer.host,
+                        printer.serie,
+                        printer.local
+                 ORDER BY printer.id ASC";
+
+        return $this->getEntityManager()->createQuery( $_dql )
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getArrayResult();
+
+    }
+
+    /**
+     * Classe do relatório geral de impressão no formato CSV detalhado
+     *
+     * @param $start
+     * @param $end
+     * @return array
+     */
+    public function relatorioCsvGeralDetalhado($start, $end) {
+
+
+        $_dql = "SELECT printer.id,
                         max(pc1.prints) as printsEnd,
                         max(pc1.date) as endDate,
                         min(pc2.prints) as printsStart,
