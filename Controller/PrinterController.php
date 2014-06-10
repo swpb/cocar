@@ -132,6 +132,7 @@ class PrinterController extends Controller
         $tmpfile = tempnam(sys_get_temp_dir(), 'impressoras');
         $file = new \SplFileObject($tmpfile, 'w');
         $writer = new CsvWriter($file);
+        $writer->writeItem(array('Id', 'Nome','Host','Serie','Local','Impressões'));
         $workflow->addWriter($writer);
 
         // Process the workflow
