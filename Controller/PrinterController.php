@@ -59,6 +59,7 @@ class PrinterController extends Controller
         if($form)
         {
             $start = new \DateTime($form['startDate']);
+
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
@@ -68,12 +69,15 @@ class PrinterController extends Controller
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
         $end   = isset($end) ? $end : time();
 
+        $data = new \DateTime();
+
         $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end);
 
         return array(
             "printer" => $printers,
             //"printerCounter" => $pCounter,
             "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
+            "data" => $data,
             "start" => $start,
             "end" => $end
         );
