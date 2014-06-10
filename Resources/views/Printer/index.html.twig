@@ -20,13 +20,13 @@
     <div class="row-fluid">
         <div class="span12 flat_box">
             <div class="padding_20">
-                <p>{{ "Relatório de impressão"|trans }}</p>
+                <p>{{ "Relatório de impressão gerado em"|trans }} {{ data|date }}</p>
                 <br>
                 <p>
                     <ul>
-                        <li><b>{{ "Data Inicial"|trans }}</b>: {{ start|date }}</li>
-                        <li><b>{{ "Data Final"|trans }}</b>: {{ end|date }}</li>
-                    </ul>
+                        <li><b>{{ "Data Inicial"|trans }}</b>: {{ start|date("d/m/Y") }} {{ "00:00:00" }}</li>
+                        <li><b>{{ "Data Final"|trans }}</b>: {{ end|date("d/m/Y") }} {{ "23:59:59" }}</li>
+                </ul>
                 </p>
             </div>
         </div>
