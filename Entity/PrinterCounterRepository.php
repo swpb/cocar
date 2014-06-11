@@ -70,6 +70,8 @@ class PrinterCounterRepository extends EntityRepository
                         printer.host,
                         printer.serie,
                         printer.local,
+                        max(pc1.prints) as printsEnd,
+                        min(pc2.prints) as printsStart,
                         (max(pc1.prints) - min(pc2.prints)) as totalPrints
                  FROM CocarBundle:Printer printer
                  LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)

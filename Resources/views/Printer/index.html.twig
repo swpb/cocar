@@ -20,12 +20,12 @@
     <div class="row-fluid">
         <div class="span12 flat_box">
             <div class="padding_20">
-                <p>{{ "Relatório de impressão gerado em"|trans }} {{ data|date }}</p>
+                <p>{{ "Relatório gerado em"|trans }} {{ data|date }}</p>
                 <br>
                 <p>
                     <ul>
-                        <li><b>{{ "Data Inicial"|trans }}</b>: {{ start|date("d/m/Y") }} {{ "00:00:00" }}</li>
-                        <li><b>{{ "Data Final"|trans }}</b>: {{ end|date("d/m/Y") }} {{ "23:59:59" }}</li>
+                        <li><b>{{ "Data Inicial"|trans }}</b>: {{ start|date("d/m/Y") }} {{ "00:00" }}</li>
+                        <li><b>{{ "Data Final"|trans }}</b>: {{ end|date("d/m/Y") }} {{ "23:59" }}</li>
                 </ul>
                 </p>
             </div>
@@ -39,6 +39,8 @@
                 <th>Host</th>
                 <th>Serie</th>
                 <th>Local</th>
+                <th>Contador Inicial</th>
+                <th>Contador Final</th>
                 <th>Impressões</th>
                 <th>Ações</th>
             </tr>
@@ -51,6 +53,8 @@
                 <td>{{ entity.host }}</td>
                 <td>{{ entity.serie }}</td>
                 <td>{{ entity.local }}</td>
+                <td>{{ entity.printsStart }}</td>
+                <td>{{ entity.printsEnd }}</td>
                 <td>{{ (entity.printsEnd - entity.printsStart) }}</td>
                 <td>
                 <ul>
