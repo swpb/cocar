@@ -59,6 +59,7 @@ class PrinterController extends Controller
         if($form)
         {
             $start = new \DateTime($form['startDate']);
+
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
@@ -68,12 +69,15 @@ class PrinterController extends Controller
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
         $end   = isset($end) ? $end : time();
 
+        $data = new \DateTime();
+
         $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end);
 
         return array(
             "printer" => $printers,
             //"printerCounter" => $pCounter,
             "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
+            "data" => $data,
             "start" => $start,
             "end" => $end
         );
@@ -91,6 +95,8 @@ class PrinterController extends Controller
         ini_set('memory_limit', '1024M');
         gc_enable();
 
+        $data = new \DateTime();
+
         $em = $this->getDoctrine()->getManager();
 
         $form = $request->query->get('form');
@@ -98,9 +104,11 @@ class PrinterController extends Controller
         if($form)
         {
             $start = new \DateTime($form['startDate']);
+            $startcsv = $start->format('d/m/Y');
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
+            $endcsv = $end->format('d/m/Y');
             $end = $end->format('U');
         }
 
@@ -114,6 +122,7 @@ class PrinterController extends Controller
 
         // Create the workflow from the reader
         $workflow = new Workflow($reader);
+        $data = new \DateTime();
 
 
         // As you can see, the first names are not capitalized correctly. Let's fix
@@ -128,6 +137,11 @@ class PrinterController extends Controller
         $tmpfile = tempnam(sys_get_temp_dir(), 'impressoras');
         $file = new \SplFileObject($tmpfile, 'w');
         $writer = new CsvWriter($file);
+        $writer->writeItem(array('','Relatório gerado em',$data->format('d/m/Y'),$data->format('H:i:s')));
+        $writer->writeItem(array('','Data Inicial:',$startcsv,'00:00:00'));
+        $writer->writeItem(array('','Data Final:',$endcsv,'23:59:59'));
+        $writer->writeItem(array(''));
+        $writer->writeItem(array('Id', 'Nome','Host','Serie','Local','Contador Inicial','Contador Final','Impressões'));
         $workflow->addWriter($writer);
 
         // Process the workflow
