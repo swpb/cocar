@@ -27,9 +27,9 @@ class PrinterCounterRepository extends EntityRepository
                         pc1.blackInk,
                         pc1.coloredInk,
                         max(pc1.date) as endDate,
-                        max(pc1.prints) as printsEnd,
-                        min(pc2.date) as startDate,
-                        min(pc2.prints) as printsStart,
+                        (SELECT pc2.prints FROM CocarBundle:PrinterCounter pc2 WHERE pc2.date = max(pc1.date) AND pc2.printer = printer.id) as printsEnd,
+                        min(pc1.date) as startDate,
+                        (SELECT pc3.prints FROM CocarBundle:PrinterCounter pc3 WHERE pc3.date = min(pc1.date) AND pc3.printer = printer.id) as printsStart,
                         printer.name,
                         printer.description,
                         printer.serie,
@@ -37,7 +37,6 @@ class PrinterCounterRepository extends EntityRepository
                         printer.host
                  FROM CocarBundle:Printer printer
                  LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
-                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc2.printer = printer.id AND pc2.date BETWEEN :start AND :end)
                  GROUP BY printer.id,
                         pc1.blackInk,
                         pc1.coloredInk,
@@ -70,12 +69,10 @@ class PrinterCounterRepository extends EntityRepository
                         printer.host,
                         printer.serie,
                         printer.local,
-                        max(pc1.prints) as printsEnd,
-                        min(pc2.prints) as printsStart,
-                        (max(pc1.prints) - min(pc2.prints)) as totalPrints
+                        (SELECT pc2.prints FROM CocarBundle:PrinterCounter pc2 WHERE pc2.date = max(pc1.date) AND pc2.printer = printer.id) as printsEnd,
+                        (SELECT pc3.prints FROM CocarBundle:PrinterCounter pc3 WHERE pc3.date = min(pc1.date) AND pc3.printer = printer.id) as printsStart
                  FROM CocarBundle:Printer printer
                  LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
-                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc2.printer = printer.id AND pc2.date BETWEEN :start AND :end)
                  GROUP BY printer.id,
                         printer.name,
                         printer.description,
@@ -102,18 +99,16 @@ class PrinterCounterRepository extends EntityRepository
 
 
         $_dql = "SELECT printer.id,
-                        max(pc1.prints) as printsEnd,
                         max(pc1.date) as endDate,
-                        min(pc2.prints) as printsStart,
-                        min(pc2.date) as startDate,
+                        (SELECT pc2.prints FROM CocarBundle:PrinterCounter pc2 WHERE pc2.date = max(pc1.date) AND pc2.printer = printer.id) as printsEnd,
+                        min(pc1.date) as startDate,
+                        (SELECT pc3.prints FROM CocarBundle:PrinterCounter pc3 WHERE pc3.date = min(pc1.date) AND pc3.printer = printer.id) as printsStart,
                         printer.name,
                         printer.host,
                         printer.serie,
-                        printer.local,
-                        (max(pc1.prints) - min(pc2.prints)) as totalPrints
+                        printer.local
                  FROM CocarBundle:Printer printer
                  LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
-                 LEFT JOIN CocarBundle:PrinterCounter pc2 WITH (pc2.printer = printer.id AND pc2.date BETWEEN :start AND :end)
                  GROUP BY printer.id,
                         printer.name,
                         printer.description,

@@ -20,6 +20,7 @@ use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\Reader\ArrayReader;
 use Ddeboer\DataImport\Writer\CsvWriter;
 use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
+use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -124,6 +125,12 @@ class PrinterController extends Controller
         $workflow = new Workflow($reader);
         $data = new \DateTime();
 
+        // Contador geral das impressorasa
+        $converter = new CallbackItemConverter(function ($item) {
+            $item['totalPrints'] = $item['printsEnd'] - $item['printsStart'];
+            return $item;
+        });
+        $workflow->addItemConverter($converter);
 
         // As you can see, the first names are not capitalized correctly. Let's fix
         // that with a value converter:
@@ -240,6 +247,12 @@ class PrinterController extends Controller
         // Create the workflow from the reader
         $workflow = new Workflow($reader);
 
+        // Contador geral das impressorasa
+        $converter = new CallbackItemConverter(function ($item) {
+            $item['totalPrints'] = $item['printsEnd'] - $item['printsStart'];
+            return $item;
+        });
+        $workflow->addItemConverter($converter);
 
         // As you can see, the first names are not capitalized correctly. Let's fix
         // that with a value converter:
