@@ -33,7 +33,12 @@
         </thead>
         <tbody>
         {% for entity in printer %}
-            <tr>
+            {% set totalprints =  entity.printsEnd - entity.printsStart %}
+            {% if (totalprints > 20000) or (totalprints <= 0) %}
+                <tr class="warning">
+            {% else %}
+                <tr>
+            {% endif %}
                 <td><a href="{{ path('printer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.host }}</td>
@@ -51,7 +56,7 @@
                 {% else %}
                     <td></td>
                 {% endif %}
-                <td>{{ (entity.printsEnd - entity.printsStart) }}</td>
+                <td>{{ totalprints }}</td>
                 <td>
                 <ul>
                     <li>

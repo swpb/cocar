@@ -3,6 +3,7 @@
 namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * PrinterCounterRepository
@@ -22,35 +23,129 @@ class PrinterCounterRepository extends EntityRepository
      */
     public function relatorioGeral($start, $end) {
 
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('blackink', 'blackInk');
+        $rsm->addScalarResult('coloredink', 'coloredInk');
+        $rsm->addScalarResult('enddate', 'endDate');
+        $rsm->addScalarResult('printsend', 'printsEnd');
+        $rsm->addScalarResult('startdate', 'startDate');
+        $rsm->addScalarResult('printsstart', 'printsStart');
+        $rsm->addScalarResult('name', 'name');
+        $rsm->addScalarResult('description', 'description');
+        $rsm->addScalarResult('serie', 'serie');
+        $rsm->addScalarResult('local', 'local');
+        $rsm->addScalarResult('host', 'host');
+        $rsm->addScalarResult('id', 'id');
 
-        $_dql = "SELECT printer.id,
-                        pc1.blackInk,
-                        pc1.coloredInk,
-                        max(pc1.date) as endDate,
-                        (SELECT pc2.prints FROM CocarBundle:PrinterCounter pc2 WHERE pc2.date = max(pc1.date) AND pc2.printer = printer.id) as printsEnd,
-                        min(pc1.date) as startDate,
-                        (SELECT pc3.prints FROM CocarBundle:PrinterCounter pc3 WHERE pc3.date = min(pc1.date) AND pc3.printer = printer.id) as printsStart,
+
+        $sql = "SELECT printer.id,
+                        pc1.blackink,
+                        pc1.coloredink,
+                        to_timestamp(CASE WHEN max(pc1.date) IS NULL
+                          THEN (CASE WHEN (SELECT min(date)
+						FROM tb_printer_counter
+						WHERE date >= ?
+						AND printer_id = printer.id) IS NULL
+					THEN (SELECT max(date)
+						FROM tb_printer_counter
+						WHERE printer_id = printer.id)
+					ELSE (SELECT min(date)
+						FROM tb_printer_counter
+						WHERE date >= ?
+						AND printer_id = printer.id)
+				END)
+                          ELSE max(pc1.date)
+                        END) as endDate,
+
+                (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = max(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (CASE WHEN (SELECT pc3.prints
+						FROM tb_printer_counter pc3
+						WHERE pc3.date = (SELECT min(date)
+							FROM tb_printer_counter
+							WHERE date >= ?
+							AND printer_id = printer.id)
+						AND printer_id = printer.id) IS NULL
+					THEN (SELECT prints
+						FROM tb_printer_counter
+						WHERE date = (SELECT max(date)
+							FROM tb_printer_counter
+							WHERE printer_id = printer.id)
+						AND printer_id = printer.id)
+					ELSE (SELECT pc3.prints
+						FROM tb_printer_counter pc3
+						WHERE pc3.date = (SELECT min(date)
+							FROM tb_printer_counter
+							WHERE date >= ?
+							AND printer_id = printer.id)
+						AND printer_id = printer.id)
+				END)
+                          ELSE (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = max(pc1.date)
+				AND pc2.printer_id = printer.id)
+                        END) as printsEnd,
+
+                (CASE WHEN min(pc1.date) IS NULL
+                          THEN (SELECT max(date)
+				FROM tb_printer_counter
+				WHERE date <= ?
+				AND printer_id = printer.id)
+                          ELSE min(pc1.date)
+                END) as startDate,
+
+                        (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = min(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (SELECT pc5.prints
+				FROM tb_printer_counter pc5
+				WHERE pc5.date = (SELECT max(date)
+					FROM tb_printer_counter
+					WHERE date <= ?
+					AND printer_id = printer.id)
+				AND pc5.printer_id = printer.id)
+                          ELSE (SELECT pc4.prints
+				FROM tb_printer_counter pc4
+				WHERE pc4.date = min(pc1.date)
+				AND pc4.printer_id = printer.id)
+                END) as printsStart,
+
                         printer.name,
                         printer.description,
                         printer.serie,
                         printer.local,
                         printer.host
-                 FROM CocarBundle:Printer printer
-                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
+                 FROM tb_printer printer
+                 LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
                  GROUP BY printer.id,
-                        pc1.blackInk,
-                        pc1.coloredInk,
+                        pc1.blackink,
+                        pc1.coloredink,
                         printer.name,
                         printer.description,
                         printer.host,
                         printer.serie,
                         printer.local
-                 ORDER BY printer.id ASC";
+                 ORDER BY printer.id ASC
+        ";
 
-        return $this->getEntityManager()->createQuery( $_dql )
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->getArrayResult();
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
+        // Start date parameters
+        $query->setParameter(5, ( $start));
+        $query->setParameter(6, ( $start));
+        $query->setParameter(7, ( $start));
+
+        // End date parameters
+        $query->setParameter(1, ( $end ));
+        $query->setParameter(2, ( $end ));
+        $query->setParameter(3, ( $end ));
+        $query->setParameter(4, ( $end ));
+        $query->setParameter(8, ( $end ));
+
+        return $query->execute();
 
     }
 
@@ -63,28 +158,127 @@ class PrinterCounterRepository extends EntityRepository
      */
     public function relatorioCsvGeral($start, $end) {
 
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('name', 'name');
+        $rsm->addScalarResult('host', 'host');
+        $rsm->addScalarResult('description', 'description');
+        $rsm->addScalarResult('serie', 'serie');
+        $rsm->addScalarResult('local', 'local');
+        $rsm->addScalarResult('blackink', 'blackInk');
+        $rsm->addScalarResult('coloredink', 'coloredInk');
+        $rsm->addScalarResult('printsend', 'printsEnd');
+        $rsm->addScalarResult('printsstart', 'printsStart');
 
-        $_dql = "SELECT printer.id,
+
+        $sql = "SELECT printer.id,
+                        pc1.blackink,
+                        pc1.coloredink,
+                        to_timestamp(CASE WHEN max(pc1.date) IS NULL
+                          THEN (CASE WHEN (SELECT min(date)
+						FROM tb_printer_counter
+						WHERE date >= ?
+						AND printer_id = printer.id) IS NULL
+					THEN (SELECT max(date)
+						FROM tb_printer_counter
+						WHERE printer_id = printer.id)
+					ELSE (SELECT min(date)
+						FROM tb_printer_counter
+						WHERE date >= ?
+						AND printer_id = printer.id)
+				END)
+                          ELSE max(pc1.date)
+                        END) as endDate,
+
+                (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = max(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (CASE WHEN (SELECT pc3.prints
+						FROM tb_printer_counter pc3
+						WHERE pc3.date = (SELECT min(date)
+							FROM tb_printer_counter
+							WHERE date >= ?
+							AND printer_id = printer.id)
+						AND printer_id = printer.id) IS NULL
+					THEN (SELECT prints
+						FROM tb_printer_counter
+						WHERE date = (SELECT max(date)
+							FROM tb_printer_counter
+							WHERE printer_id = printer.id)
+						AND printer_id = printer.id)
+					ELSE (SELECT pc3.prints
+						FROM tb_printer_counter pc3
+						WHERE pc3.date = (SELECT min(date)
+							FROM tb_printer_counter
+							WHERE date >= ?
+							AND printer_id = printer.id)
+						AND printer_id = printer.id)
+				END)
+                          ELSE (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = max(pc1.date)
+				AND pc2.printer_id = printer.id)
+                        END) as printsEnd,
+
+                (CASE WHEN min(pc1.date) IS NULL
+                          THEN (SELECT max(date)
+				FROM tb_printer_counter
+				WHERE date <= ?
+				AND printer_id = printer.id)
+                          ELSE min(pc1.date)
+                END) as startDate,
+
+                        (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = min(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (SELECT pc5.prints
+				FROM tb_printer_counter pc5
+				WHERE pc5.date = (SELECT max(date)
+					FROM tb_printer_counter
+					WHERE date <= ?
+					AND printer_id = printer.id)
+				AND pc5.printer_id = printer.id)
+                          ELSE (SELECT pc4.prints
+				FROM tb_printer_counter pc4
+				WHERE pc4.date = min(pc1.date)
+				AND pc4.printer_id = printer.id)
+                END) as printsStart,
+
                         printer.name,
-                        printer.host,
+                        printer.description,
                         printer.serie,
                         printer.local,
-                        (SELECT pc2.prints FROM CocarBundle:PrinterCounter pc2 WHERE pc2.date = max(pc1.date) AND pc2.printer = printer.id) as printsEnd,
-                        (SELECT pc3.prints FROM CocarBundle:PrinterCounter pc3 WHERE pc3.date = min(pc1.date) AND pc3.printer = printer.id) as printsStart
-                 FROM CocarBundle:Printer printer
-                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
+                        printer.host
+                 FROM tb_printer printer
+                 LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
                  GROUP BY printer.id,
+                        pc1.blackink,
+                        pc1.coloredink,
                         printer.name,
                         printer.description,
                         printer.host,
                         printer.serie,
                         printer.local
-                 ORDER BY printer.id ASC";
+                 ORDER BY printer.id ASC
+        ";
 
-        return $this->getEntityManager()->createQuery( $_dql )
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->getArrayResult();
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
+        // Start date parameters
+        $query->setParameter(5, ( $start));
+        $query->setParameter(6, ( $start));
+        $query->setParameter(7, ( $start));
+
+        // End date parameters
+        $query->setParameter(1, ( $end ));
+        $query->setParameter(2, ( $end ));
+        $query->setParameter(3, ( $end ));
+        $query->setParameter(4, ( $end ));
+        $query->setParameter(8, ( $end ));
+
+        return $query->execute();
 
     }
 
@@ -97,30 +291,129 @@ class PrinterCounterRepository extends EntityRepository
      */
     public function relatorioCsvGeralDetalhado($start, $end) {
 
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('blackink', 'blackInk');
+        $rsm->addScalarResult('coloredink', 'coloredInk');
+        $rsm->addScalarResult('enddate', 'endDate');
+        $rsm->addScalarResult('printsend', 'printsEnd');
+        $rsm->addScalarResult('startdate', 'startDate');
+        $rsm->addScalarResult('printsstart', 'printsStart');
+        $rsm->addScalarResult('name', 'name');
+        $rsm->addScalarResult('description', 'description');
+        $rsm->addScalarResult('serie', 'serie');
+        $rsm->addScalarResult('local', 'local');
+        $rsm->addScalarResult('host', 'host');
+        $rsm->addScalarResult('id', 'id');
 
-        $_dql = "SELECT printer.id,
-                        max(pc1.date) as endDate,
-                        (SELECT pc2.prints FROM CocarBundle:PrinterCounter pc2 WHERE pc2.date = max(pc1.date) AND pc2.printer = printer.id) as printsEnd,
-                        min(pc1.date) as startDate,
-                        (SELECT pc3.prints FROM CocarBundle:PrinterCounter pc3 WHERE pc3.date = min(pc1.date) AND pc3.printer = printer.id) as printsStart,
+
+        $sql = "SELECT printer.id,
+                        pc1.blackink,
+                        pc1.coloredink,
+                        to_timestamp(CASE WHEN max(pc1.date) IS NULL
+                          THEN (CASE WHEN (SELECT min(date)
+						FROM tb_printer_counter
+						WHERE date >= ?
+						AND printer_id = printer.id) IS NULL
+					THEN (SELECT max(date)
+						FROM tb_printer_counter
+						WHERE printer_id = printer.id)
+					ELSE (SELECT min(date)
+						FROM tb_printer_counter
+						WHERE date >= ?
+						AND printer_id = printer.id)
+				END)
+                          ELSE max(pc1.date)
+                        END) as endDate,
+
+                (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = max(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (CASE WHEN (SELECT pc3.prints
+						FROM tb_printer_counter pc3
+						WHERE pc3.date = (SELECT min(date)
+							FROM tb_printer_counter
+							WHERE date >= ?
+							AND printer_id = printer.id)
+						AND printer_id = printer.id) IS NULL
+					THEN (SELECT prints
+						FROM tb_printer_counter
+						WHERE date = (SELECT max(date)
+							FROM tb_printer_counter
+							WHERE printer_id = printer.id)
+						AND printer_id = printer.id)
+					ELSE (SELECT pc3.prints
+						FROM tb_printer_counter pc3
+						WHERE pc3.date = (SELECT min(date)
+							FROM tb_printer_counter
+							WHERE date >= ?
+							AND printer_id = printer.id)
+						AND printer_id = printer.id)
+				END)
+                          ELSE (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = max(pc1.date)
+				AND pc2.printer_id = printer.id)
+                        END) as printsEnd,
+
+                (CASE WHEN min(pc1.date) IS NULL
+                          THEN (SELECT max(date)
+				FROM tb_printer_counter
+				WHERE date <= ?
+				AND printer_id = printer.id)
+                          ELSE min(pc1.date)
+                END) as startDate,
+
+                        (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = min(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (SELECT pc5.prints
+				FROM tb_printer_counter pc5
+				WHERE pc5.date = (SELECT max(date)
+					FROM tb_printer_counter
+					WHERE date <= ?
+					AND printer_id = printer.id)
+				AND pc5.printer_id = printer.id)
+                          ELSE (SELECT pc4.prints
+				FROM tb_printer_counter pc4
+				WHERE pc4.date = min(pc1.date)
+				AND pc4.printer_id = printer.id)
+                END) as printsStart,
+
                         printer.name,
-                        printer.host,
+                        printer.description,
                         printer.serie,
-                        printer.local
-                 FROM CocarBundle:Printer printer
-                 LEFT JOIN CocarBundle:PrinterCounter pc1 WITH (pc1.printer = printer.id AND pc1.date BETWEEN :start AND :end)
+                        printer.local,
+                        printer.host
+                 FROM tb_printer printer
+                 LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
                  GROUP BY printer.id,
+                        pc1.blackink,
+                        pc1.coloredink,
                         printer.name,
                         printer.description,
                         printer.host,
                         printer.serie,
                         printer.local
-                 ORDER BY printer.id ASC";
+                 ORDER BY printer.id ASC
+        ";
 
-        return $this->getEntityManager()->createQuery( $_dql )
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->getArrayResult();
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
+        // Start date parameters
+        $query->setParameter(5, ( $start));
+        $query->setParameter(6, ( $start));
+        $query->setParameter(7, ( $start));
+
+        // End date parameters
+        $query->setParameter(1, ( $end ));
+        $query->setParameter(2, ( $end ));
+        $query->setParameter(3, ( $end ));
+        $query->setParameter(4, ( $end ));
+        $query->setParameter(8, ( $end ));
+
+        return $query->execute();
 
     }
 }
