@@ -599,11 +599,20 @@ class PrinterController extends Controller
     {
         try
         {
-            $counter = new PrinterCounter;
+            // First try to find printer on the same date
+            $time = time();
+            $counter = $this->getDoctrine()->getManager()->getRepository('CocarBundle:PrinterCounter')->findBy(array(
+                'printer' => $printer,
+                'date' => $time
+            ));
+
+            if(empty($counter)) {
+                $counter = new PrinterCounter;
+            }
 
             $counter->setPrinter($printer);
             $counter->setPrints($prints);
-            $counter->setDate(time());
+            $counter->setDate($time);
 
             $this->em->persist($counter);
             $this->em->flush();
