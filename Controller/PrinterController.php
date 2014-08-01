@@ -608,6 +608,9 @@ class PrinterController extends Controller
 
             if(empty($counter)) {
                 $counter = new PrinterCounter;
+            } else {
+                $this->get('logger')->info("Entrada repetida para impressora $printer e data $time");
+                return true;
             }
 
             $counter->setPrinter($printer);
