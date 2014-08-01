@@ -70,7 +70,8 @@ class CronCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em = $this->getApplication()->getKernel()->getContainer()->get('doctrine')->getManager();
+        $this->em = $this->getContainer()->get('doctrine')->getManager();
+            //$this->getApplication()->getKernel()->getContainer()->get('doctrine')->getManager();
         
         $return = null;
 
