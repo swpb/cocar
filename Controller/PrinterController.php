@@ -64,6 +64,7 @@ class PrinterController extends Controller
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
+            $end->setTime('23', '59', '59');
             $end = $end->format('U');
         }
 
@@ -109,6 +110,7 @@ class PrinterController extends Controller
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
+            $end->setTime('23', '59', '59');
             $endcsv = $end->format('d/m/Y');
             $end = $end->format('U');
         }
@@ -118,8 +120,20 @@ class PrinterController extends Controller
 
         $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioCsvGeral($start, $end);
 
+        // Gera cabeçalho
+        $cabecalho = array();
+        foreach($printers as $elm) {
+            array_push($cabecalho, array_keys($elm));
+            break;
+        }
+        // Adiciona contagem no cabeçalho
+        array_push($cabecalho[0], 'totalPrints');
+
         // Gera CSV
-        $reader = new ArrayReader($printers);
+        $reader = new ArrayReader(array_merge($cabecalho, $printers));
+
+        // Gera CSV
+        //$reader = new ArrayReader($printers);
 
         // Create the workflow from the reader
         $workflow = new Workflow($reader);
@@ -127,7 +141,11 @@ class PrinterController extends Controller
 
         // Contador geral das impressorasa
         $converter = new CallbackItemConverter(function ($item) {
-            $item['totalPrints'] = $item['printsEnd'] - $item['printsStart'];
+            if (array_key_exists('printsEnd', $item) && array_key_exists('printsStart', $item)) {
+                $item['totalPrints'] = $item['printsEnd'] - $item['printsStart'];
+            } else {
+                $item['totalPrints'] = null;
+            }
             return $item;
         });
         $workflow->addItemConverter($converter);
@@ -185,6 +203,7 @@ class PrinterController extends Controller
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
+            $end->setTime('23', '59', '59');
             $end = $end->format('U');
         }
 
@@ -233,7 +252,10 @@ class PrinterController extends Controller
             $start = $start->format('U');
 
             $end = new \DateTime($form['endDate']);
+            $end->setTime('23', '59', '59');
             $end = $end->format('U');
+
+            $this->get('logger')->debug("Relatório CSV Detalhado. Início = " . $form['startDate'] . " Fim = " . $form['endDate']);
         }
 
         $start = isset($start) ? $start : (time() - ((60*60*24)*30));
@@ -241,15 +263,31 @@ class PrinterController extends Controller
 
         $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioCsvGeralDetalhado($start, $end);
 
+        // Gera cabeçalho
+        $cabecalho = array();
+        foreach($printers as $elm) {
+            array_push($cabecalho, array_keys($elm));
+            break;
+        }
+        // Adiciona contagem no cabeçalho
+        array_push($cabecalho[0], 'totalPrints');
+
         // Gera CSV
-        $reader = new ArrayReader($printers);
+        $reader = new ArrayReader(array_merge($cabecalho, $printers));
+
+        // Gera CSV
+        //$reader = new ArrayReader($printers);
 
         // Create the workflow from the reader
         $workflow = new Workflow($reader);
 
         // Contador geral das impressorasa
         $converter = new CallbackItemConverter(function ($item) {
-            $item['totalPrints'] = $item['printsEnd'] - $item['printsStart'];
+            if (array_key_exists('printsEnd', $item) && array_key_exists('printsStart', $item)) {
+                $item['totalPrints'] = $item['printsEnd'] - $item['printsStart'];
+            } else {
+                $item['totalPrints'] = null;
+            }
             return $item;
         });
         $workflow->addItemConverter($converter);
@@ -567,6 +605,9 @@ class PrinterController extends Controller
 
     public function totalizer()
     {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
         $printers = $this->em->getRepository('CocarBundle:Printer')->findAll();
 
         foreach($printers as $printer)
@@ -587,6 +628,7 @@ class PrinterController extends Controller
             catch(Exception $e)
             {
                 #return new Response($e->getMessage());
+                $this->get('logger')->error("Erro na coleta da impressora $host \n".$e->getMessage());
             }
         }
         return new Response();
@@ -609,7 +651,7 @@ class PrinterController extends Controller
             if(empty($counter)) {
                 $counter = new PrinterCounter;
             } else {
-                $this->get('logger')->info("Entrada repetida para impressora $printer e data $time");
+                $this->get('logger')->error("Entrada repetida para impressora $printer e data $time");
                 return true;
             }
 

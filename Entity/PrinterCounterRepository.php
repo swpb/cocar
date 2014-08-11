@@ -309,7 +309,33 @@ class PrinterCounterRepository extends EntityRepository
         $sql = "SELECT printer.id,
                         pc1.blackink,
                         pc1.coloredink,
-                        to_timestamp(CASE WHEN max(pc1.date) IS NULL
+
+                (CASE WHEN min(pc1.date) IS NULL
+                          THEN (SELECT max(date)
+				FROM tb_printer_counter
+				WHERE date <= ?
+				AND printer_id = printer.id)
+                          ELSE min(pc1.date)
+                END) as startDate,
+
+                        (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = min(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (SELECT pc5.prints
+				FROM tb_printer_counter pc5
+				WHERE pc5.date = (SELECT max(date)
+					FROM tb_printer_counter
+					WHERE date <= ?
+					AND printer_id = printer.id)
+				AND pc5.printer_id = printer.id)
+                          ELSE (SELECT pc4.prints
+				FROM tb_printer_counter pc4
+				WHERE pc4.date = min(pc1.date)
+				AND pc4.printer_id = printer.id)
+                END) as printsStart,
+
+                (CASE WHEN max(pc1.date) IS NULL
                           THEN (CASE WHEN (SELECT min(date)
 						FROM tb_printer_counter
 						WHERE date >= ?
@@ -355,31 +381,6 @@ class PrinterCounterRepository extends EntityRepository
 				WHERE pc2.date = max(pc1.date)
 				AND pc2.printer_id = printer.id)
                         END) as printsEnd,
-
-                (CASE WHEN min(pc1.date) IS NULL
-                          THEN (SELECT max(date)
-				FROM tb_printer_counter
-				WHERE date <= ?
-				AND printer_id = printer.id)
-                          ELSE min(pc1.date)
-                END) as startDate,
-
-                        (CASE WHEN (SELECT pc2.prints
-				FROM tb_printer_counter pc2
-				WHERE pc2.date = min(pc1.date)
-				AND pc2.printer_id = printer.id) IS NULL
-                          THEN (SELECT pc5.prints
-				FROM tb_printer_counter pc5
-				WHERE pc5.date = (SELECT max(date)
-					FROM tb_printer_counter
-					WHERE date <= ?
-					AND printer_id = printer.id)
-				AND pc5.printer_id = printer.id)
-                          ELSE (SELECT pc4.prints
-				FROM tb_printer_counter pc4
-				WHERE pc4.date = min(pc1.date)
-				AND pc4.printer_id = printer.id)
-                END) as printsStart,
 
                         printer.name,
                         printer.description,

@@ -14,7 +14,7 @@ class CronCommand extends ContainerAwareCommand
      *
      * @var type object
      */
-    private $em;
+    //private $em;
     
     protected function configure()
     {
@@ -70,7 +70,7 @@ class CronCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em = $this->getContainer()->get('doctrine')->getManager();
+        //$this->em = $this->getContainer()->get('doctrine')->getManager();
             //$this->getApplication()->getKernel()->getContainer()->get('doctrine')->getManager();
         
         $return = null;
@@ -130,8 +130,11 @@ class CronCommand extends ContainerAwareCommand
                 file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/endalarm");
             elseif($task == 'graphdailyperform')
                 file_get_contents("http://localhost/cocar/web/app_dev.php/cocar/graphdailyperform");
-            elseif($task == 'printer')
-                $this->getContainer()->get('printer')->totalizer();
+	    elseif($task == 'printer') {
+		$printer_controller = $this->getContainer()->get('printer');
+		$printer_controller->setContainer($this->getContainer());
+		$printer_controller->totalizer();
+	    }
             
         }
         catch(Exception $e)
