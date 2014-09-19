@@ -603,12 +603,47 @@ class PrinterController extends Controller
             ->getForm();
     }
 
+    /**
+     * Totalize results by limit and offset parameters
+     *
+     * @return Response
+     */
     public function totalizer()
     {
+        $n_printers = $this->em->createQuery('SELECT count(p) FROM CocarBundle:Printer p')->getSingleScalarResult();
+
+        $limit = 1000;
+        $iterations = (int)($n_printers / 1000);
+        $iterations = $iterations + 1;
+
+        $i = 0;
+        while ($i < $iterations) {
+            // O objetivo é executar a coleta a cada 1000 impressoras
+            $offset = $limit * $i;
+            $this->selectPrinters($limit, $offset);
+            $i = $i + 1;
+        }
+
+
+        return new Response();
+    }
+
+    /**
+     * Select printers by offset and limit
+     */
+    private function selectPrinters($limit, $offset) {
         ini_set('memory_limit', '1024M');
         gc_enable();
 
-        $printers = $this->em->getRepository('CocarBundle:Printer')->findAll();
+        $printers = $this->em
+            ->createQuery('SELECT p FROM CocarBundle:Printer p ORDER BY p.id desc')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getResult();
+
+        //$printers = $this->em->getRepository('CocarBundle:Printer')->findAll();
+
+        $this->get('logger')->info("Executando coleta de $limit impressoras começando no número $offset");
 
         foreach($printers as $printer)
         {
@@ -616,6 +651,8 @@ class PrinterController extends Controller
             {
                 $community = $printer->getCommunitySnmpPrinter();
                 $host = $printer->getHost();
+
+                $this->get('logger')->info("Coletando impressora $host");
 
                 $com = "snmpwalk -O qv -v 1 -c $community $host 1.3.6.1.2.1.43.10.2.1.4.1.1";
 
@@ -631,7 +668,6 @@ class PrinterController extends Controller
                 $this->get('logger')->error("Erro na coleta da impressora $host \n".$e->getMessage());
             }
         }
-        return new Response();
     }
 
     /**
