@@ -612,8 +612,8 @@ class PrinterController extends Controller
     {
         $n_printers = $this->em->createQuery('SELECT count(p) FROM CocarBundle:Printer p')->getSingleScalarResult();
 
-        $limit = 1000;
-        $iterations = (int)($n_printers / 1000);
+        $limit = 500;
+        $iterations = (int)($n_printers / $limit);
         $iterations = $iterations + 1;
 
         $i = 0;
@@ -636,15 +636,16 @@ class PrinterController extends Controller
         gc_enable();
 
         $printers = $this->em
-            ->createQuery('SELECT p FROM CocarBundle:Printer p ORDER BY p.id desc')
+            ->createQuery('SELECT p FROM CocarBundle:Printer p ORDER BY p.id')
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->getResult();
 
         //$printers = $this->em->getRepository('CocarBundle:Printer')->findAll();
 
-        $this->get('logger')->info("Executando coleta de $limit impressoras começando no número $offset");
+        echo "Executando coleta de $limit impressoras começando no número $offset\n";
 
+        $memory_start = memory_get_usage();
         foreach($printers as $printer)
         {
             try
@@ -652,7 +653,7 @@ class PrinterController extends Controller
                 $community = $printer->getCommunitySnmpPrinter();
                 $host = $printer->getHost();
 
-                $this->get('logger')->info("Coletando impressora $host");
+                $this->get('logger')->info("Coletando impressora $host | ID ".$printer->getId());
 
                 $com = "snmpwalk -O qv -v 1 -c $community $host 1.3.6.1.2.1.43.10.2.1.4.1.1";
 
@@ -668,6 +669,9 @@ class PrinterController extends Controller
                 $this->get('logger')->error("Erro na coleta da impressora $host \n".$e->getMessage());
             }
         }
+        echo "$limit impressoras lidas iniciando em $offset \t -- Memory: " . round((memory_get_usage()-$memory_start)/1024/1024, 2) ." mb\n";
+
+        $this->em->flush();
     }
 
     /**
@@ -696,7 +700,6 @@ class PrinterController extends Controller
             $counter->setDate($time);
 
             $this->em->persist($counter);
-            $this->em->flush();
         }
         catch(\Exception $e)
         {
