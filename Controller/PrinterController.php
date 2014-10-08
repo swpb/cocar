@@ -612,13 +612,13 @@ class PrinterController extends Controller
     {
         $n_printers = $this->em->createQuery('SELECT count(p) FROM CocarBundle:Printer p')->getSingleScalarResult();
 
-        $limit = 500;
+        $limit = 20;
         $iterations = (int)($n_printers / $limit);
         $iterations = $iterations + 1;
 
         $i = 0;
         while ($i < $iterations) {
-            // O objetivo é executar a coleta a cada 1000 impressoras
+            // O objetivo é executar a coleta a cada $limit impressoras
             $offset = $limit * $i;
             $this->selectPrinters($limit, $offset);
             $i = $i + 1;
@@ -653,9 +653,12 @@ class PrinterController extends Controller
                 $community = $printer->getCommunitySnmpPrinter();
                 $host = $printer->getHost();
 
-                $this->get('logger')->info("Coletando impressora $host | ID ".$printer->getId());
+				$this->get('logger')->info("Coletando impressora $host | ID ".$printer->getId());
+				$arrBundle = $this->get('kernel')->getBundles();
+				$rootDir = $arrBundle['CocarBundle']->getPath();
+				$script = $rootDir . "/Resources/scripts/timeout3";
 
-                $com = "snmpwalk -O qv -v 1 -c $community $host 1.3.6.1.2.1.43.10.2.1.4.1.1";
+                $com = "$script snmpwalk -O qv -v 1 -c $community $host 1.3.6.1.2.1.43.10.2.1.4.1.1";
 
                 if($outPut = shell_exec($com))
                 {
