@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Swpb\Bundle\CocarBundle\Entity\PrinterCounter;
+use Swpb\Bundle\CocarBundle\Entity\Printer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -55,7 +56,7 @@ class ApiController extends Controller {
     /**
      * @param $ip_addr
      * @Route("/printer/{ip_addr}", name="printer_counter_update")
-     * @Method("PUT")
+     * @Method("POST")
      */
     public function printerAction($ip_addr, Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -81,40 +82,49 @@ class ApiController extends Controller {
 
         $logger->debug("Atualizando informações para a impressora com IP = $ip_addr\n".$status);
 
-        try {
-            $printer = $em->getRepository('CocarBundle:Printer')->findOneBy(array('host' => $ip_addr));
-        }
-        catch(\Doctrine\ORM\NoResultException $e) {
-            $logger->error("COLETA: Impressora não cadastrada: $ip_addr \n$e");
-            $error_msg = '{
-                "message": "Impressora não cadastrada",
-                "codigo": 2
-            }';
+        $printer = $em->getRepository('CocarBundle:Printer')->findOneBy(array('host' => $ip_addr));
+        if (empty($printer)) {
+            $logger->error("COLETA: Impressora não cadastrada: $ip_addr. Inserindo....");
 
 
-            $response = new JsonResponse();
-            $response->setStatusCode('500');
-            $response->setContent($error_msg);
-            return $response;
+            // Insere impressora que não estiver cadastrada
+            $printer = new Printer();
+
+            // FIXME: Deve ser retornado pelo Cocar
+            $data = new \DateTime();
+            $printer->setCommunitySnmpPrinter('public');
+            $printer->setHost($ip_addr);
+            $printer->setDescription('Impressora detectada automaticamente em '.$data->format('d/m/Y'));
+            $printer->setName("Impressora $ip_addr");
+
         }
 
 
         $counter = $this->getDoctrine()->getManager()->getRepository('CocarBundle:PrinterCounter')->findBy(array(
-            'printer' => $printer,
+            'printer' => $printer->getId(),
             'date' => $dados['counter_time']
         ));
 
         if(empty($counter)) {
             $counter = new PrinterCounter;
         } else {
-            $this->get('logger')->error("Entrada repetida para impressora $printer e data ".$dados['counter_time']);
-            return true;
+            $this->get('logger')->error("Entrada repetida para impressora". $printer->getId() ." e data ".$dados['counter_time']);
+            $response = new JsonResponse();
+            $response->setStatusCode('200');
+
+            return $response;
         }
 
         // Atualiza impressora sempre que alterar o serial
-        $printer->setName($dados['model']);
-        $printer->setSerie($dados['serial']);
-        $printer->setDescription($dados['description']);
+        if (!empty($dados['model'])) {
+            $printer->setName($dados['model']);
+        }
+        if (!empty($dados['serial'])) {
+            $printer->setSerie($dados['serial']);
+        }
+        if (!empty($dados['description'])) {
+            $printer->setDescription($dados['description']);
+        }
 
         // Grava o contador
         $counter->setPrinter($printer);
