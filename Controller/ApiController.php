@@ -99,21 +99,7 @@ class ApiController extends Controller {
 
         }
 
-
-        $counter = $this->getDoctrine()->getManager()->getRepository('CocarBundle:PrinterCounter')->findBy(array(
-            'printer' => $printer->getId(),
-            'date' => $dados['counter_time']
-        ));
-
-        if(empty($counter)) {
-            $counter = new PrinterCounter;
-        } else {
-            $this->get('logger')->error("Entrada repetida para impressora". $printer->getId() ." e data ".$dados['counter_time']);
-            $response = new JsonResponse();
-            $response->setStatusCode('200');
-
-            return $response;
-        }
+        $counter = new PrinterCounter();
 
         // Atualiza impressora sempre que alterar o serial
         if (!empty($dados['model'])) {
@@ -131,9 +117,16 @@ class ApiController extends Controller {
         $counter->setPrints($dados['counter']);
         $counter->setDate($dados['counter_time']);
 
-        $em->persist($printer);
-        $em->persist($counter);
-        $em->flush();
+        try {
+            $em->persist($printer);
+            $em->flush();
+            $em->persist($counter);
+            $em->flush();
+        } catch (\Exception $e) {
+            // Ainda assim retorna como sucesso
+            $logger->error("Entrada repetida para impressora ".$printer->getHost() . "na data ".$dados['counter_time']);
+        }
+
 
         $response = new JsonResponse();
         $response->setStatusCode('200');

@@ -3,11 +3,12 @@
 namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * PrinterCounter
  *
- * @ORM\Table("tb_printer_counter")
+ * @ORM\Table("tb_printer_counter",uniqueConstraints={@UniqueConstraint(name="printer_date_unique_idx", columns={"printer_id", "date"})})
  * @ORM\Entity(repositoryClass="Swpb\Bundle\CocarBundle\Entity\PrinterCounterRepository")
  */
 class PrinterCounter
