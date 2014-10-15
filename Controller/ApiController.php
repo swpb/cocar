@@ -140,4 +140,37 @@ class ApiController extends Controller {
         return $response;
     }
 
+    /**
+     * @Route("/printer", name="printer_list")
+     * @Method("GET")
+     */
+    public function printerListAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $logger = $this->get('logger');
+
+        $printer = $em->getRepository('CocarBundle:Printer')->findAll();
+
+        $teste = array();
+        foreach($printer as $elm) {
+            $saida = array(
+                'network_ip' => $elm->getHost(),
+                'community' => $elm->getCommunitySnmpPrinter()
+            );
+            array_push($teste, $saida);
+        }
+
+        $dados = json_encode(array(
+            'printers'=> $teste
+            ),
+            true);
+
+        $logger->debug("Enviando lista de impressoras \n".$dados);
+
+        $response = new JsonResponse();
+        $response->setStatusCode('200');
+        $response->setContent($dados);
+        return $response;
+
+    }
+
 } 
