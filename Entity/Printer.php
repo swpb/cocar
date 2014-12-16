@@ -14,6 +14,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Printer
 {
     /**
+     * Construct
+     */
+    public function __construct()
+    {
+        $this->printerCounter = new ArrayCollection();
+    }
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -69,14 +77,6 @@ class Printer
      */
     private $local;
 
-    /**
-     * Construct
-     */
-    public function __construct()
-    {
-        $this->printerCounter = new ArrayCollection();
-    }
-    
     /**
      * Get id
      *
@@ -228,11 +228,12 @@ class Printer
     /**
      * Add printerCounter
      *
-     * @param \Cocar\CocarBundle\Entity\PrinterCounter $printerCounter
+     * @param PrinterCounter $printerCounter
      * @return Entity
      */
-    public function addPrinterCounter(\Swpb\Bundle\CocarBundle\Entity\PrinterCounter $printerCounter)
+    public function addPrinterCounter(PrinterCounter $printerCounter)
     {
+        $printerCounter->setPrinter($this);
         $this->printerCounter[] = $printerCounter;
     
         return $this;
@@ -241,9 +242,9 @@ class Printer
     /**
      * Remove printerCounter
      *
-     * @param \Cocar\CocarBundle\Entity\PrinterCounter $printerCounter
+     * @param PrinterCounter $printerCounter
      */
-    public function removePrinterCounter(\Swpb\Bundle\CocarBundle\Entity\PrinterCounter $printerCounter)
+    public function removePrinterCounter(PrinterCounter $printerCounter)
     {
         $this->printerCounter->removeElement($printerCounter);
     }

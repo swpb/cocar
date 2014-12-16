@@ -327,13 +327,27 @@ class PrinterController extends Controller
      */
     public function createAction(Request $request)
     {
+        $logger = $this->get('logger');
         $entity = new Printer();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
+        $cacic = $this->container->get('kernel')->getBundle('CacicCommonBundle');
+        $logger->debug("Registro do Bundle do CACIC: ".$cacic);
+
         if ($form->isValid())
         {
             $em = $this->getDoctrine()->getManager();
+
+            // Se o Cacic existir, preenche o local automaticamente
+            $local = $entity->getLocal();
+            if (!empty($cacic) && empty($local)) {
+                $rede = $em->getRepository('CacicCommonBundle:Rede')->getDadosRedePreColeta(
+                    $entity->getHost()
+                );
+                $entity->setLocal($rede->getNmRede());
+            }
+
             $em->persist($entity);
             $em->flush();
 
@@ -342,6 +356,7 @@ class PrinterController extends Controller
 
         return array(
             'entity' => $entity,
+            'cacic' => $cacic,
             'form'   => $form->createView(),
         );
     }
@@ -420,12 +435,25 @@ class PrinterController extends Controller
      */
     public function editAction($id)
     {
+        $logger = $this->get('logger');
         $em = $this->getDoctrine()->getManager();
+
+        $cacic = $this->container->get('kernel')->getBundle('CacicCommonBundle');
 
         $entity = $em->getRepository('CocarBundle:Printer')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Printer entity.');
+        }
+
+        // Se o Cacic existir, preenche o local automaticamente
+        $local = $entity->getLocal();
+        if (!empty($cacic) && empty($local)) {
+            $rede = $em->getRepository('CacicCommonBundle:Rede')->getDadosRedePreColeta(
+                $entity->getHost()
+            );
+            $logger->debug("Valor default para o campo local: ".$rede->getNmRede());
+            $entity->setLocal($rede->getNmRede());
         }
 
         $editForm = $this->createEditForm($entity);
@@ -457,7 +485,7 @@ class PrinterController extends Controller
         return $form;
     }
     /**
-     * Edits an existing Printer entity.
+     * Edit an existing Printer entity.
      *
      * @Route("/{id}", name="printer_update")
      * @Method("PUT")

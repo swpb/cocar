@@ -86,7 +86,6 @@ class ApiController extends Controller {
         if (empty($printer)) {
             $logger->error("COLETA: Impressora não cadastrada: $ip_addr. Inserindo....");
 
-
             // Insere impressora que não estiver cadastrada
             $printer = new Printer();
 
@@ -110,6 +109,9 @@ class ApiController extends Controller {
         }
         if (!empty($dados['description'])) {
             $printer->setDescription($dados['description']);
+        }
+        if (!empty($dados['local'])) {
+            $printer->setLocal($dados['local']);
         }
 
         // Grava o contador
@@ -162,6 +164,58 @@ class ApiController extends Controller {
         $response = new JsonResponse();
         $response->setStatusCode('200');
         $response->setContent($dados);
+        return $response;
+
+    }
+
+    /**
+     * Return printer list
+     *
+     * @Route("/networks", name="networks_list")
+     * @Method("GET")
+     */
+    public function networkListAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $logger = $this->get('logger');
+
+        $cacic = $this->container->get('kernel')->getBundle('CacicCommonBundle');
+
+        $response = new JsonResponse();
+
+
+        if (empty($cacic)) {
+            $logger->error("O CACIC não está instalado. Não é possível fornecer lista de subredes");
+            $response->setStatusCode(404);
+
+            $error_msg = '{
+                "message": "CACIC nao esta instalado",
+                "codigo": 1
+            }';
+            $response->setContent($error_msg);
+
+            return $response;
+        }
+
+        $redes = $em->getRepository('CacicCommonBundle:Rede')->findAll();
+
+        $saida = array();
+        foreach ($redes as $elm) {
+            array_push($saida, array(
+                'ip_network' => $elm->getTeIpRede(),
+                'netmask' => $elm->getTeMascaraRede(),
+                'name' => $elm->getNmRede()
+            ));
+        }
+
+        $dados = json_encode(array(
+                'networks'=> $saida
+            ),
+            true
+        );
+
+        $response->setStatusCode(200);
+        $response->setContent($dados);
+
         return $response;
 
     }
