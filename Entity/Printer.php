@@ -67,7 +67,7 @@ class Printer
     /**
      * @var string
      *
-     * @ORM\Column(name="serie", type="text", nullable=true)
+     * @ORM\Column(name="serie", type="text", nullable=false)
      */
     private $serie;
 
