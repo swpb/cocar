@@ -4,11 +4,12 @@ namespace Swpb\Bundle\CocarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * Printer
  *
- * @ORM\Table("tb_printer")
+ * @ORM\Table("tb_printer", uniqueConstraints={@UniqueConstraint(name="serial_idx", columns={"serie"})})
  * @ORM\Entity(repositoryClass="Swpb\Bundle\CocarBundle\Entity\PrinterRepository")
  */
 class Printer

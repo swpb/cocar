@@ -55,10 +55,10 @@ class ApiController extends Controller {
 
     /**
      * @param $ip_addr
-     * @Route("/printer/{ip_addr}", name="printer_counter_update")
+     * @Route("/printer/{serie}", name="printer_counter_update")
      * @Method("POST")
      */
-    public function printerAction($ip_addr, Request $request) {
+    public function printerAction($serie, Request $request) {
         $em = $this->getDoctrine()->getManager();
         $logger = $this->get('logger');
 
@@ -66,7 +66,7 @@ class ApiController extends Controller {
         $dados = json_decode($status, true);
 
         if (empty($dados)) {
-            $logger->error("JSON INVÁLIDO!!!!!!!!!!!!!!!!!!! Erro no envio das informações da impressora $ip_addr");
+            $logger->error("JSON INVÁLIDO!!!!!!!!!!!!!!!!!!! Erro no envio das informações da impressora $serie");
             // Retorna erro se o JSON for inválido
             $error_msg = '{
                 "message": "JSON Inválido",
@@ -80,11 +80,12 @@ class ApiController extends Controller {
             return $response;
         }
 
-        $logger->debug("Atualizando informações para a impressora com IP = $ip_addr\n".$status);
+        $logger->debug("Atualizando informações para a impressora com IP = $serie\n".$status);
 
-        $printer = $em->getRepository('CocarBundle:Printer')->findOneBy(array('host' => $ip_addr));
+        $printer = $em->getRepository('CocarBundle:Printer')->findOneBy(array('serie' => $serie));
+        $ip_addr = $dados['ip_address'];
         if (empty($printer)) {
-            $logger->error("COLETA: Impressora não cadastrada: $ip_addr. Inserindo....");
+            $logger->error("COLETA: Impressora não cadastrada: $serie. Inserindo....");
 
             // Insere impressora que não estiver cadastrada
             $printer = new Printer();
@@ -93,8 +94,9 @@ class ApiController extends Controller {
             $data = new \DateTime();
             $printer->setCommunitySnmpPrinter('public');
             $printer->setHost($ip_addr);
+            $printer->setSerie($serie);
             $printer->setDescription('Impressora detectada automaticamente em '.$data->format('d/m/Y'));
-            $printer->setName("Impressora $ip_addr");
+            $printer->setName("Impressora $serie");
 
         }
 
@@ -103,9 +105,6 @@ class ApiController extends Controller {
         // Atualiza impressora sempre que alterar o serial
         if (!empty($dados['model'])) {
             $printer->setName($dados['model']);
-        }
-        if (!empty($dados['serial'])) {
-            $printer->setSerie($dados['serial']);
         }
         if (!empty($dados['description'])) {
             $printer->setDescription($dados['description']);
@@ -126,7 +125,7 @@ class ApiController extends Controller {
             $em->flush();
         } catch (\Exception $e) {
             // Ainda assim retorna como sucesso
-            $logger->error("Entrada repetida para impressora ".$printer->getHost() . "na data ".$dados['counter_time']);
+            $logger->error("Entrada repetida para impressora ".$serie . "na data ".$dados['counter_time']);
         }
 
 
