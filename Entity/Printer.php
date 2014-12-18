@@ -79,6 +79,27 @@ class Printer
     private $local;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="active", type="boolean", nullable=true)
+     */
+    private $active;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="serie_simpress", type="text", nullable=true)
+     */
+    private $serie_simpress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="netmask", type="text", nullable=true)
+     */
+    private $netmask;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -258,5 +279,70 @@ class Printer
     public function getPrinterCounter()
     {
         return $this->printerCounter;
+    }
+
+    /**
+     * Active set
+     *
+     * @param $active
+     * @return $this
+     */
+    public function setActive($active) {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Active get
+     *
+     * @return bool
+     */
+    public function getActive() {
+        return $this->active;
+    }
+
+    /**
+     * Set serie_simpress
+     *
+     * @param string $serie_simpress
+     * @return Printer
+     */
+    public function setSerieSimpress($serie_simpress)
+    {
+        $this->serie_simpress = $serie_simpress;
+
+        return $this;
+    }
+
+    /**
+     * Get serie
+     *
+     * @return string
+     */
+    public function getSerieSimpress()
+    {
+        return $this->serie_simpress;
+    }
+
+    /**
+     * Netmask set
+     *
+     * @param $netmask
+     * @return $this
+     */
+    public function setNetmask($netmask) {
+        $this->netmask = $netmask;
+
+        return $this;
+    }
+
+    /**
+     * Netmask get
+     *
+     * @return string
+     */
+    public function getNetmask() {
+        return $this->netmask;
     }
 }

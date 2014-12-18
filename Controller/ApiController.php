@@ -112,6 +112,9 @@ class ApiController extends Controller {
         if (!empty($dados['local'])) {
             $printer->setLocal($dados['local']);
         }
+        if (!empty($dados['netmask'])) {
+            $printer->setNetmask($dados['netmask']);
+        }
 
         // Grava o contador
         $counter->setPrinter($printer);
@@ -148,7 +151,8 @@ class ApiController extends Controller {
         foreach($printer as $elm) {
             $saida = array(
                 'network_ip' => $elm->getHost(),
-                'community' => $elm->getCommunitySnmpPrinter()
+                'community' => $elm->getCommunitySnmpPrinter(),
+                'serie' => $elm->getSerie()
             );
             array_push($teste, $saida);
         }
