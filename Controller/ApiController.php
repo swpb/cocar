@@ -103,6 +103,8 @@ class ApiController extends Controller {
         $counter = new PrinterCounter();
 
         // Atualiza impressora sempre que alterar o serial
+        $printer->setSerieSimpress(substr($serie, 0, 14));
+
         if (!empty($dados['model'])) {
             $printer->setName($dados['model']);
         }

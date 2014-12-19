@@ -166,7 +166,7 @@ class PrinterController extends Controller
         $writer->writeItem(array('','Data Inicial:',$startcsv,'00:00:00'));
         $writer->writeItem(array('','Data Final:',$endcsv,'23:59:59'));
         $writer->writeItem(array(''));
-        $writer->writeItem(array('Id', 'Nome','Host','Serie','Local','Contador Inicial','Contador Final','Impressões'));
+        #$writer->writeItem(array('Id', 'Nome','Host','Serie','Local','Contador Inicial','Contador Final','Impressões'));
         $workflow->addWriter($writer);
 
         // Process the workflow

@@ -26,6 +26,8 @@ class PrinterCounterRepository extends EntityRepository
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('blackink', 'blackInk');
         $rsm->addScalarResult('coloredink', 'coloredInk');
+        $rsm->addScalarResult('serie_simpress', 'serie_simpress');
+        $rsm->addScalarResult('active', 'active');
         $rsm->addScalarResult('enddate', 'endDate');
         $rsm->addScalarResult('printsend', 'printsEnd');
         $rsm->addScalarResult('startdate', 'startDate');
@@ -41,6 +43,8 @@ class PrinterCounterRepository extends EntityRepository
         $sql = "SELECT printer.id,
                         pc1.blackink,
                         pc1.coloredink,
+                        printer.serie_simpress,
+                        printer.active,
                         to_timestamp(CASE WHEN max(pc1.date) IS NULL
                           THEN (CASE WHEN (SELECT min(date)
 						FROM tb_printer_counter
@@ -120,9 +124,13 @@ class PrinterCounterRepository extends EntityRepository
                         printer.host
                  FROM tb_printer printer
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
+                 WHERE printer.active IS FALSE
+                 OR printer.active IS NULL
                  GROUP BY printer.id,
                         pc1.blackink,
                         pc1.coloredink,
+                        printer.serie_simpress,
+                        printer.active,
                         printer.name,
                         printer.description,
                         printer.host,
@@ -167,14 +175,44 @@ class PrinterCounterRepository extends EntityRepository
         $rsm->addScalarResult('local', 'local');
         $rsm->addScalarResult('blackink', 'blackInk');
         $rsm->addScalarResult('coloredink', 'coloredInk');
+        $rsm->addScalarResult('serie_simpress', 'serie_simpress');
         $rsm->addScalarResult('printsend', 'printsEnd');
         $rsm->addScalarResult('printsstart', 'printsStart');
 
 
         $sql = "SELECT printer.id,
-                        pc1.blackink,
-                        pc1.coloredink,
-                        to_timestamp(CASE WHEN max(pc1.date) IS NULL
+                        printer.name,
+                        printer.host,
+                        printer.serie,
+                        printer.serie_simpress,
+                        printer.local,
+
+                (CASE WHEN min(pc1.date) IS NULL
+                          THEN (SELECT max(date)
+				FROM tb_printer_counter
+				WHERE date <= ?
+				AND printer_id = printer.id)
+                          ELSE min(pc1.date)
+                END) as startDate,
+
+                        (CASE WHEN (SELECT pc2.prints
+				FROM tb_printer_counter pc2
+				WHERE pc2.date = min(pc1.date)
+				AND pc2.printer_id = printer.id) IS NULL
+                          THEN (SELECT pc5.prints
+				FROM tb_printer_counter pc5
+				WHERE pc5.date = (SELECT max(date)
+					FROM tb_printer_counter
+					WHERE date <= ?
+					AND printer_id = printer.id)
+				AND pc5.printer_id = printer.id)
+                          ELSE (SELECT pc4.prints
+				FROM tb_printer_counter pc4
+				WHERE pc4.date = min(pc1.date)
+				AND pc4.printer_id = printer.id)
+                END) as printsStart,
+
+                to_timestamp(CASE WHEN max(pc1.date) IS NULL
                           THEN (CASE WHEN (SELECT min(date)
 						FROM tb_printer_counter
 						WHERE date >= ?
@@ -219,43 +257,15 @@ class PrinterCounterRepository extends EntityRepository
 				FROM tb_printer_counter pc2
 				WHERE pc2.date = max(pc1.date)
 				AND pc2.printer_id = printer.id)
-                        END) as printsEnd,
+                        END) as printsEnd
 
-                (CASE WHEN min(pc1.date) IS NULL
-                          THEN (SELECT max(date)
-				FROM tb_printer_counter
-				WHERE date <= ?
-				AND printer_id = printer.id)
-                          ELSE min(pc1.date)
-                END) as startDate,
-
-                        (CASE WHEN (SELECT pc2.prints
-				FROM tb_printer_counter pc2
-				WHERE pc2.date = min(pc1.date)
-				AND pc2.printer_id = printer.id) IS NULL
-                          THEN (SELECT pc5.prints
-				FROM tb_printer_counter pc5
-				WHERE pc5.date = (SELECT max(date)
-					FROM tb_printer_counter
-					WHERE date <= ?
-					AND printer_id = printer.id)
-				AND pc5.printer_id = printer.id)
-                          ELSE (SELECT pc4.prints
-				FROM tb_printer_counter pc4
-				WHERE pc4.date = min(pc1.date)
-				AND pc4.printer_id = printer.id)
-                END) as printsStart,
-
-                        printer.name,
-                        printer.description,
-                        printer.serie,
-                        printer.local,
-                        printer.host
                  FROM tb_printer printer
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
+                 WHERE printer.active IS FALSE
+                 OR printer.active IS NULL
                  GROUP BY printer.id,
-                        pc1.blackink,
-                        pc1.coloredink,
+                        printer.serie_simpress,
+                        printer.active,
                         printer.name,
                         printer.description,
                         printer.host,
@@ -292,8 +302,6 @@ class PrinterCounterRepository extends EntityRepository
     public function relatorioCsvGeralDetalhado($start, $end) {
 
         $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('blackink', 'blackInk');
-        $rsm->addScalarResult('coloredink', 'coloredInk');
         $rsm->addScalarResult('enddate', 'endDate');
         $rsm->addScalarResult('printsend', 'printsEnd');
         $rsm->addScalarResult('startdate', 'startDate');
@@ -301,14 +309,18 @@ class PrinterCounterRepository extends EntityRepository
         $rsm->addScalarResult('name', 'name');
         $rsm->addScalarResult('description', 'description');
         $rsm->addScalarResult('serie', 'serie');
+        $rsm->addScalarResult('serie_simpress', 'serie_simpress');
         $rsm->addScalarResult('local', 'local');
         $rsm->addScalarResult('host', 'host');
         $rsm->addScalarResult('id', 'id');
 
 
         $sql = "SELECT printer.id,
-                        pc1.blackink,
-                        pc1.coloredink,
+                        printer.name,
+                        printer.host,
+                        printer.serie,
+                        printer.serie_simpress,
+                        printer.local,
 
                 (CASE WHEN min(pc1.date) IS NULL
                           THEN (SELECT max(date)
@@ -380,18 +392,17 @@ class PrinterCounterRepository extends EntityRepository
 				FROM tb_printer_counter pc2
 				WHERE pc2.date = max(pc1.date)
 				AND pc2.printer_id = printer.id)
-                        END) as printsEnd,
+                        END) as printsEnd
 
-                        printer.name,
-                        printer.description,
-                        printer.serie,
-                        printer.local,
-                        printer.host
                  FROM tb_printer printer
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
+                 WHERE printer.active IS FALSE
+                 OR printer.active IS NULL
                  GROUP BY printer.id,
                         pc1.blackink,
                         pc1.coloredink,
+                        printer.serie_simpress,
+                        printer.active,
                         printer.name,
                         printer.description,
                         printer.host,
