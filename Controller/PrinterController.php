@@ -39,6 +39,12 @@ class PrinterController extends Controller
     public function __construct(EntityManager $em = null)
     {
         $this->em = $em;
+        $this->serial = array(
+            '.1.3.6.1.2.1.43.5.1.1.17',
+            '.1.3.6.1.2.1.43.5.1.1.17.1',
+            '.1.3.6.1.4.1.641.2.1.2.1.6.1',
+            '.1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.3.0'
+        );
     }
 
     /**
@@ -685,6 +691,38 @@ class PrinterController extends Controller
 				$arrBundle = $this->get('kernel')->getBundles();
 				$rootDir = $arrBundle['CocarBundle']->getPath();
 				$script = $rootDir . "/Resources/scripts/timeout3";
+
+                // Primeiro adiciona número de série
+                foreach($this->serial as $serie) {
+                    $com = "$script snmpwalk -O qv -v 1 -c $community $host $serie";
+
+                    if($outPut = shell_exec($com))
+                    {
+                        // Só preciso do primeiro número de série
+                        $printer = $this->em->getRepository('CocarBundle:Printer')->findOneBy(array(
+                            'serie' => $outPut
+                        ));
+                        if (empty($printer)) {
+                            // Se o número de série não existir trata-se de uma nova impressora
+                            $data = new \DateTime();
+                            $printer = new Printer();
+                            $printer->setSerie($outPut);
+                            $printer->setCommunitySnmpPrinter('public');
+                            $printer->setDescription('Impressora detectada automaticamente em '.$data->format('d/m/Y'));
+                            $printer->setName("Impressora $serie");
+                        }
+                        $printer->setHost($host);
+                        $this->em->persist($printer);
+                        break;
+                    }
+                }
+
+                $serie = $printer->getSerie();
+
+                if (empty($serie)) {
+                    $this->get('logger')->error("Serial não encontrado para o Host $host. Ignorando...");
+                    continue;
+                }
 
                 $com = "$script snmpwalk -O qv -v 1 -c $community $host 1.3.6.1.2.1.43.10.2.1.4.1.1";
 

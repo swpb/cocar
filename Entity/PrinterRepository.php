@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class PrinterRepository extends EntityRepository
 {
+
+    public function getModelsList() {
+        $_dql = "SELECT DISTINCT printer.name as model
+         FROM CocarBundle:Printer as printer
+         LEFT JOIN CocarBundle:PrinterModels as m WITH printer.name = m.model
+         WHERE m.model IS NULL
+        ";
+
+        return $this->getEntityManager()->createQuery($_dql)->getScalarResult();
+    }
 }

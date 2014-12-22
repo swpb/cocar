@@ -54,7 +54,7 @@ class ApiController extends Controller {
     }
 
     /**
-     * @param $ip_addr
+     * @param $serie
      * @Route("/printer/{serie}", name="printer_counter_update")
      * @Method("POST")
      */

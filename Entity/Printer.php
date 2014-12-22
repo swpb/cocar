@@ -60,7 +60,7 @@ class Printer
     /**
      * @var string
      *
-     * @ORM\Column(name="host", type="string", length=255, unique=true)
+     * @ORM\Column(name="host", type="string", length=255, unique=false)
      */
     private $host;
 

@@ -1,0 +1,56 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block body %}
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="box grad_colour_black">
+                <h2 class="box_head round_top"><i class="icon-globe"></i> {{ "Locais"|trans }}</h2>
+
+                <div class="block box_content round_bottom padding_10">
+
+                    <h3>{{ "Lista de Modelos de Impressora"|trans }}</h3>
+                    <p>{{ "Lista de modelos válidos para impressora nos relatórios gerados"|trans }}</p>
+                    <br />
+
+                    <form action="{{ path('printer_models_index') }}" method="post">
+                        <div class="records_list">
+                            {{ form_errors(form) }}
+                            {{ form_widget(form._token) }}
+                            <div class="item-form">
+                                <label>Modelos:</label>
+                                {{ form_widget(form.model) }}
+
+                                {% for model in selected %}
+                                    <div class="checkbox">
+                                        <label for="swpb_bundle_cocarbundle_printer_models_model_{{ model.model }}">
+                                            <input id="swpb_bundle_cocarbundle_printer_models_model_{{ model.model }}" type="checkbox" value="{{ model.model }}" name="swpb_bundle_cocarbundle_printer_models[model][]" checked>
+                                            {{ model.model }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+
+                                {% for elm in models %}
+                                    <div class="checkbox">
+                                        <label for="swpb_bundle_cocarbundle_printer_models_model_{{ elm.model }}">
+                                            <input id="swpb_bundle_cocarbundle_printer_models_model_{{ elm.model }}" type="checkbox" value="{{ elm.model }}" name="swpb_bundle_cocarbundle_printer_models[model][]">
+                                            {{ elm.model }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {{ form_rest(form) }}
+                            <div class="item-form">
+                                <button type="submit">Cadastrar</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div> <!-- /block -->
+            </div> <!-- /box -->
+        </div> <!-- /span -->
+
+    </div> <!-- /row -->
+{% endblock %}
