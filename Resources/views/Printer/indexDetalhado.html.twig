@@ -13,10 +13,12 @@
                     <br>
                     <button type="submit" formaction="{{ path('printer_csv_detalhado') }}">Gerar CSV</button>
                     <button type="submit" formaction="{{ path('printer_models_index') }}" title="{{ 'Cadastrar modelos'| trans }}" formtarget="_blank" class="button">{{ 'Modelos de impressora'|trans }}</button>
+                    <button type="submit" formaction="{{ path('printer_index') }}" title="{{ 'Lista de impressoras'| trans }}" class="button">{{ 'Impressoras'|trans }}</button>
                 </form>
             </li>
         </ul>
     </center>
+    <br>
     <table class="records_list">
         <thead>
             <tr>
