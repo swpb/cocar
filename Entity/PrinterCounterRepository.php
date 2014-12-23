@@ -19,9 +19,10 @@ class PrinterCounterRepository extends EntityRepository
      *
      * @param $start
      * @param $end
+     * @param $inactive Should we consider only inactive printers
      * @return array
      */
-    public function relatorioGeral($start, $end) {
+    public function relatorioGeral($start, $end, $inactive = null) {
 
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('blackink', 'blackInk');
@@ -123,10 +124,18 @@ class PrinterCounterRepository extends EntityRepository
                         printer.local,
                         printer.host
                  FROM tb_printer printer
-                 LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
-                 WHERE printer.active IS FALSE
-                 OR printer.active IS NULL
-                 GROUP BY printer.id,
+                 INNER JOIN tb_printer_models m ON printer.name = m.model
+                 LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)";
+
+        if ($inactive == true) {
+            $sql = $sql."
+                 WHERE printer.active IS FALSE ";
+        } else {
+            $sql = $sql."
+                 WHERE printer.active IS TRUE
+                 OR printer.active IS NULL ";
+        }
+        $sql = $sql."GROUP BY printer.id,
                         pc1.blackink,
                         pc1.coloredink,
                         printer.serie_simpress,
@@ -260,8 +269,9 @@ class PrinterCounterRepository extends EntityRepository
                         END) as printsEnd
 
                  FROM tb_printer printer
+                 INNER JOIN tb_printer_models m ON printer.name = m.model
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
-                 WHERE printer.active IS FALSE
+                 WHERE printer.active IS TRUE
                  OR printer.active IS NULL
                  GROUP BY printer.id,
                         printer.serie_simpress,
@@ -396,7 +406,7 @@ class PrinterCounterRepository extends EntityRepository
 
                  FROM tb_printer printer
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
-                 WHERE printer.active IS FALSE
+                 WHERE printer.active IS TRUE
                  OR printer.active IS NULL
                  GROUP BY printer.id,
                         pc1.blackink,

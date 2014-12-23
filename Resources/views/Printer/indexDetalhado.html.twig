@@ -9,8 +9,10 @@
                     {{ form_errors(form) }}
                     {{ form_widget(form.startDate) }}
                     {{ form_widget(form.endDate) }}
-                    <button type="submit">Enviar</button>
+                    <button type="submit">{{ "Filtrar data"|trans }}</button>
+                    <br>
                     <button type="submit" formaction="{{ path('printer_csv_detalhado') }}">Gerar CSV</button>
+                    <button type="submit" formaction="{{ path('printer_models_index') }}" title="{{ 'Cadastrar modelos'| trans }}" formtarget="_blank" class="button">{{ 'Modelos de impressora'|trans }}</button>
                 </form>
             </li>
         </ul>

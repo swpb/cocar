@@ -14,7 +14,7 @@
                     <button type="submit" formaction="{{ path('printer_csv') }}">{{ "Gerar CSV"|trans }}</button>
                     <button type="submit" formaction="{{ path('printer_index_detalhado') }}">{{ "Relatório detalhado"|trans }}</button>
                     <button type="submit" formaction="{{ path('printer_models_index') }}" title="{{ 'Cadastrar modelos'| trans }}" formtarget="_blank" class="button">{{ 'Modelos de impressora'|trans }}</button>
-                    <button type="submit" formaction="{{ path('printer_inactive_index') }}" title="{{ 'Verificar impressoras inativas'| trans }}" formtarget="_blank" class="button">{{ 'Impressoras inativas'|trans }}</button>
+                    <button type="submit" formaction="{{ path('printer_index') }}" title="{{ 'Lista de impressoras'| trans }}" class="button">{{ 'Impressoras'|trans }}</button>
                 </form>
 
             </li>
@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <form action="{{ path('printer_deactivate') }}" id="printers">
+    <form action="{{ path('printer_activate') }}" id="printers">
         <table class="records_list">
             <thead>
                 <tr>
@@ -96,7 +96,7 @@
         </table>
         <ul class="button">
             <li>
-                <button type="submit" title="{{ 'Desativar Impressoras'|trans }}" id="desativar">{{ 'Desativar'|trans }}</button>
+                <button type="submit" title="{{ 'Ativar Impressoras'|trans }}" id="ativar">{{ 'Ativar'|trans }}</button>
                 <a href="{{ path('printer_new') }}">
                     Cadastrar uma nova impressora
                 </a>

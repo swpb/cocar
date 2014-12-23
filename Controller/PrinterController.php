@@ -387,6 +387,90 @@ class PrinterController extends Controller
     }
 
     /**
+     * Creates a new Printer entity.
+     *
+     * @Route("/deactivate", name="printer_deactivate")
+     * @Method("POST")
+     */
+    public function deactivateAction(Request $request) {
+        if ( ! $request->isXmlHttpRequest() ) {
+            throw $this->createNotFoundException( 'Página não encontrada' );
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $logger = $this->get('logger');
+
+        $data = $request->get('printer');
+
+        foreach($data as $elm) {
+            $logger->debug("Desativando impressora com ID $elm");
+            $printer = $em->getRepository('CocarBundle:Printer')->find($elm);
+            if (empty($printer)) {
+                $this->get('session')->getFlashBag()->add('error', "Impressoras $elm nao desativada!");
+                $logger->error("Impressora não encontrada: $elm");
+                continue;
+            }
+            $printer->setActive(false);
+            $em->persist($printer);
+        }
+        $logger->debug("Todas as impressoras desativadas");
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add('success', 'Impressoras desativadas com sucesso!');
+
+        $response = new Response( json_encode( array('status' => 'ok') ) );
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+    }
+
+    /**
+     * Lists all Printer entities.
+     *
+     * @Route("/inactive", name="printer_inactive_index")
+     * @Method("GET")
+     * @Template()
+     */
+    public function inactiveIndexAction(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $request->query->get('form');
+
+        if($form)
+        {
+            $start = new \DateTime($form['startDate']);
+
+            $start = $start->format('U');
+
+            $end = new \DateTime($form['endDate']);
+            $end->setTime('23', '59', '59');
+            $end = $end->format('U');
+        }
+
+        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+        $end   = isset($end) ? $end : time();
+
+        $data = new \DateTime();
+
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->relatorioGeral($start, $end, true);
+
+        return array(
+            "printer" => $printers,
+            //"printerCounter" => $pCounter,
+            "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
+            "data" => $data,
+            "start" => $start,
+            "end" => $end
+        );
+
+    }
+
+    /**
      * Displays a form to create a new Printer entity.
      *
      * @Route("/new", name="printer_new")
@@ -826,4 +910,44 @@ class PrinterController extends Controller
         $date = empty($date) ? date('U') : $date;
         shell_exec("rrdtool update $arqRrd $date:$prints:0");
     }
+
+    /**
+     * Creates a new Printer entity.
+     *
+     * @Route("/activate", name="printer_activate")
+     * @Method("POST")
+     */
+    public function activateAction(Request $request) {
+        if ( ! $request->isXmlHttpRequest() ) {
+            throw $this->createNotFoundException( 'Página não encontrada' );
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $logger = $this->get('logger');
+
+        $data = $request->get('printer');
+
+        foreach($data as $elm) {
+            $logger->debug("Desativando impressora com ID $elm");
+            $printer = $em->getRepository('CocarBundle:Printer')->find($elm);
+            if (empty($printer)) {
+                $this->get('session')->getFlashBag()->add('error', "Impressoras $elm nao desativada!");
+                $logger->error("Impressora não encontrada: $elm");
+                continue;
+            }
+            $printer->setActive(true);
+            $em->persist($printer);
+        }
+        $logger->debug("Todas as impressoras desativadas");
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add('success', 'Impressoras desativadas com sucesso!');
+
+        $response = new Response( json_encode( array('status' => 'ok') ) );
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+    }
+
 }
