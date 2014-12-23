@@ -1,0 +1,114 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2 class="general-title">Impressoras sem coletas há mais de 30 dias</h2>
+    <center>
+        <ul>
+            <li>
+                <form action="{{ path('printer_index_detalhado') }}" method="get" {{ form_enctype(form) }}>
+                    <button type="submit" formaction="{{ path('printer_csv_detalhado') }}">Gerar CSV</button>
+                    <button type="submit" formaction="{{ path('printer_models_index') }}" title="{{ 'Cadastrar modelos'| trans }}" formtarget="_blank" class="button">{{ 'Modelos de impressora'|trans }}</button>
+                    <button type="submit" formaction="{{ path('printer_index') }}" title="{{ 'Lista de impressoras'| trans }}" class="button">{{ 'Impressoras'|trans }}</button>
+                </form>
+            </li>
+        </ul>
+    </center>
+    <br>
+    <form action="{{ path('printer_deactivate') }}" id="printers">
+        <table class="records_list">
+            <thead>
+                <tr>
+                    <th style="text-align: center">
+                        <label style="margin: auto; width:12px; height:10px;">
+                            <input type="checkbox" class="toggleCheck" name="toggleCheck[]" value="printer">
+                        </label>
+                    </th>
+                    <th>Id</th>
+                    <th>Nome</th>
+                    <th>Host</th>
+                    <th>Serie</th>
+                    <th>SIMPRESS</th>
+                    <th>Local</th>
+                    <th>Data Final</th>
+                    <th>Contador Final</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entity in printer %}
+                <tr id="item_{{ entity.id }}">
+                    <td>
+                        <label style="margin: auto; width:12px; height:10px;">
+                            <input type="checkbox" id="item_id_{{ entity.id }}" name="printer[]" value="{{ entity.id }}">
+                        </label>
+                    </td>
+                    <td><a href="{{ path('printer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                    <td>{{ entity.name }}</td>
+                    <td>{{ entity.host }}</td>
+                    <td>{{ entity.serie }}</td>
+                    <td>{{ entity.serie_simpress }}</td>
+                    <td>{{ entity.local }}</td>
+                    {% if entity.endDate %}
+                        <td>{{ entity.endDate|date("d/m/Y") }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>{{ entity.printsEnd }}</td>
+                    <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('printer_show', { 'id': entity.id }) }}">Visualizar</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('printer_edit', { 'id': entity.id }) }}">Editar</a>
+                        </li>
+                    </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <ul class="button">
+            <li>
+                <button type="submit" title="{{ 'Desativar Impressoras'|trans }}" id="desativar">{{ 'Desativar'|trans }}</button>
+            </li>
+        </ul>
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript">
+        System.Form.toggleCheck(); // Ativa o monitoramento de Clique no checkbox para marcar/desmarcar todos
+    </script>
+
+    <script type="text/javascript">
+        $( "#printers").submit(function( event ){
+
+            // Stop form from submitting normally
+            event.preventDefault();
+
+            //var form = $( this );
+            var postData = $(this).serializeArray();
+            var formURL = $(this).attr("action");
+            //var formData = new FormData($('form')[1]);
+            $.ajax({
+                type: "POST",
+                url: formURL,
+                data: postData,
+                //processData: false,
+                //contentType: false,
+                success: function(){
+                    location.reload();
+                },
+                error: function(){
+                    location.reload();
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

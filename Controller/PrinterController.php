@@ -471,6 +471,38 @@ class PrinterController extends Controller
     }
 
     /**
+     * Lists printers without information.
+     *
+     * @Route("/semcoletas", name="printer_semcoletas_index")
+     * @Template()
+     */
+    public function semColetasAction(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        gc_enable();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $end = $request->get('end');
+
+        $end = isset($end) ? $end : (time() - ((60*60*24)*30));
+        $start = isset($end) ? $end : (time() - ((60*60*24)*30));
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->semColetas($end);
+
+        $data = new \DateTime();
+
+        return array(
+            "printer" => $printers,
+            //"printerCounter" => $pCounter,
+            "form" => $this->createCalendarForm(0, new \DateTime(date("Y-m-d", $start)), new \DateTime(date("Y-m-d", $end)))->createView(),
+            "data" => $data,
+            "start" => $start,
+            "end" => $end
+        );
+
+    }
+
+    /**
      * Displays a form to create a new Printer entity.
      *
      * @Route("/new", name="printer_new")

@@ -18,8 +18,8 @@ class PrinterRepository extends EntityRepository
          FROM CocarBundle:Printer as printer
          LEFT JOIN CocarBundle:PrinterModels as m WITH printer.name = m.model
          WHERE m.model IS NULL
-         AND printer.active = TRUE
-         OR printer.active IS NULL
+         AND (printer.active = TRUE
+              OR printer.active IS NULL)
          ORDER BY printer.name
         ";
 

@@ -26,7 +26,25 @@
 {% endblock %}
 
 {% block main %}
-	
+
+	<div class="container-box">
+		<div class="top-title">
+			<h2>Impressoras sem coleta</h2>
+		</div>
+		<div class="content">
+			<div class="box-result">
+				<span>{{ "Mais de 30 dias"|trans }}</span>
+				<span class="value">{{ printers|length }}</span>
+				<form id="semcoletas">
+					<input type="hidden" value="{{ end }}" name="end">
+					<button type="submit" formaction="{{ path('printer_semcoletas_index') }}" title="{{ "Lista de impressoras de coleta" }}">{{ "Lista de impressoras" }}</button>
+				</form>
+				<br>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+
 	<div class="container-box">
 		<div class="top-title">
 			<h2>Unidades que Apresentam Tráfego Alto</h2>

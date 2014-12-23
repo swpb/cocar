@@ -438,4 +438,58 @@ class PrinterCounterRepository extends EntityRepository
         return $query->execute();
 
     }
+
+    public function semColetas($end) {
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('name', 'name');
+        $rsm->addScalarResult('host', 'host');
+        $rsm->addScalarResult('description', 'description');
+        $rsm->addScalarResult('serie', 'serie');
+        $rsm->addScalarResult('local', 'local');
+        $rsm->addScalarResult('blackink', 'blackInk');
+        $rsm->addScalarResult('coloredink', 'coloredInk');
+        $rsm->addScalarResult('serie_simpress', 'serie_simpress');
+        $rsm->addScalarResult('printsend', 'printsEnd');
+        $rsm->addScalarResult('enddate', 'endDate');
+
+
+        $sql = "SELECT printer.id,
+                        printer.name,
+                        printer.host,
+                        printer.serie,
+                        printer.serie_simpress,
+                        printer.local,
+
+                        to_timestamp(max(pc1.date)) as endDate,
+
+                        (SELECT pc2.prints
+                        FROM tb_printer_counter pc2
+                        WHERE pc2.date = max(pc1.date)
+                        AND pc2.printer_id = printer.id)  as printsEnd
+
+                 FROM tb_printer printer
+                 INNER JOIN tb_printer_models m ON printer.name = m.model
+                 INNER JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date < ?)
+                 WHERE printer.active IS TRUE
+                 OR printer.active IS NULL
+                 GROUP BY printer.id,
+                        printer.serie_simpress,
+                        printer.active,
+                        printer.name,
+                        printer.description,
+                        printer.host,
+                        printer.serie,
+                        printer.local
+                 ORDER BY max(pc1.date) ASC
+        ";
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
+        // End date parameters
+        $query->setParameter(1, ( $end ));
+
+        return $query->execute();
+    }
 }

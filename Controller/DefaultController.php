@@ -90,14 +90,20 @@ class DefaultController extends Controller
                         ->setParameter('status', 'UP')
                         ->getSingleResult();
 
+        // Impressoras sem coletas nos últimos 30 dias
+        $end = isset($end) ? $end : (time() - ((60*60*24)*30));
+        $printers = $em->getRepository('CocarBundle:PrinterCounter')->semColetas($end);
+
         return array(
-        			 'reliability' => $reliability,
-        			 'high_traffic' => $highTraffic,
-        			 'without_traffic' => $withoutTraffic,
-                     'total' => $total['total'],
-                     'search_result' => isset($searchResult) ? $searchResult : null,
-                     'search' => $search
-        			);
+            'reliability' => $reliability,
+            'high_traffic' => $highTraffic,
+            'without_traffic' => $withoutTraffic,
+            'total' => $total['total'],
+            'search_result' => isset($searchResult) ? $searchResult : null,
+            'search' => $search,
+            'printers' => $printers,
+            'end' => $end
+            );
     }
 
     /**
