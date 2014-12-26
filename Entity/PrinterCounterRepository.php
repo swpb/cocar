@@ -132,8 +132,8 @@ class PrinterCounterRepository extends EntityRepository
                  WHERE printer.active IS FALSE ";
         } else {
             $sql = $sql."
-                 WHERE printer.active IS TRUE
-                 OR printer.active IS NULL ";
+                 WHERE (printer.active IS TRUE
+                    OR printer.active IS NULL) ";
         }
         $sql = $sql."GROUP BY printer.id,
                         pc1.blackink,
@@ -271,8 +271,8 @@ class PrinterCounterRepository extends EntityRepository
                  FROM tb_printer printer
                  INNER JOIN tb_printer_models m ON printer.name = m.model
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
-                 WHERE printer.active IS TRUE
-                 OR printer.active IS NULL
+                 WHERE (printer.active IS TRUE
+                  OR printer.active IS NULL)
                  GROUP BY printer.id,
                         printer.serie_simpress,
                         printer.active,
@@ -405,9 +405,10 @@ class PrinterCounterRepository extends EntityRepository
                         END) as printsEnd
 
                  FROM tb_printer printer
+                 INNER JOIN tb_printer_models m ON printer.name = m.model
                  LEFT JOIN tb_printer_counter pc1 ON (pc1.printer_id = printer.id AND pc1.date BETWEEN ? AND ?)
-                 WHERE printer.active IS TRUE
-                 OR printer.active IS NULL
+                 WHERE (printer.active IS TRUE
+                  OR printer.active IS NULL)
                  GROUP BY printer.id,
                         pc1.blackink,
                         pc1.coloredink,
