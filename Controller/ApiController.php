@@ -147,20 +147,11 @@ class ApiController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $logger = $this->get('logger');
 
-        $printer = $em->getRepository('CocarBundle:Printer')->findAll();
-
-        $teste = array();
-        foreach($printer as $elm) {
-            $saida = array(
-                'network_ip' => $elm->getHost(),
-                'community' => $elm->getCommunitySnmpPrinter(),
-                'serie' => $elm->getSerie()
-            );
-            array_push($teste, $saida);
-        }
+        $printer = $em->getRepository('CocarBundle:Printer')->getAllByModel();
 
         $dados = json_encode(array(
-            'printers'=> $teste
+                'printers'=> $printer,
+                'result_count'=>count($printer)
             ),
             true);
 

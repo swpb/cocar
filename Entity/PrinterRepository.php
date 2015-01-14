@@ -13,6 +13,11 @@ use Doctrine\ORM\EntityRepository;
 class PrinterRepository extends EntityRepository
 {
 
+    /**
+     * Pega lista de todos os modelos de impressora disponíveis
+     *
+     * @return array
+     */
     public function getModelsList() {
         $_dql = "SELECT DISTINCT printer.name as model
          FROM CocarBundle:Printer as printer
@@ -24,5 +29,16 @@ class PrinterRepository extends EntityRepository
         ";
 
         return $this->getEntityManager()->createQuery($_dql)->getScalarResult();
+    }
+
+    public function getAllByModel() {
+        $_dql = "SELECT printer.host, printer.communitySnmpPrinter as community, printer.serie
+        FROM CocarBundle:Printer as printer
+        INNER JOIN CocarBundle:PrinterModels as m WITH printer.name = m.model
+        WHERE (printer.active = TRUE
+              OR printer.active IS NULL)
+        ";
+
+        return $this->getEntityManager()->createQuery($_dql)->getArrayResult();
     }
 }
