@@ -15,6 +15,7 @@ use Swpb\Bundle\CocarBundle\Entity\PrinterCounter;
 use Swpb\Bundle\CocarBundle\Entity\Printer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swpb\Bundle\CocarBundle\Entity\Computador;
 
 
 /**
@@ -214,6 +215,80 @@ class ApiController extends Controller {
 
         return $response;
 
+    }
+
+    /**
+     * Update computador. JSON Recebido:
+     *
+     * {
+     *       "host": "127.0.0.1",
+     *       "mac_address": "00:00:00:00:00:00",
+     *       "ping_date": "2015-12-03 10:44:55.614790",
+     *       "network_ip": "10.209.111.0",
+     *       "local": "DEPEX",
+     *       "netmask": "255.255.255.0",
+     *       "so_name": "Microsoft Windows Vista SP0 - SP2, Server 2008, or Windows 7 Ultimate",
+     *       "so_version": "Microsoft Windows Vista SP0 - SP2, Server 2008, or Windows 7 Ultimate",
+     *       "accuracy": "100",
+     *       "so_vendor": "Microsoft",
+     *       "so_os_family": "Windows",
+     *       "so_type": "general purpose",
+     *       "so_cpe": ""
+     * }
+     *
+     * @param $host
+     * @Route("/computador/{host}", name="computador_ping")
+     * @Method("POST")
+     *
+     */
+    public function computadorPingAction($host, Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $logger = $this->get('logger');
+
+        $status = $request->getContent();
+        $dados = json_decode($status, true);
+
+        if (empty($dados)) {
+            $logger->error("JSON INVÁLIDO!!!!!!!!!!!!!!!!!!! Erro no envio das informações do computador $host");
+            // Retorna erro se o JSON for inválido
+            $error_msg = '{
+                "message": "JSON Inválido",
+                "codigo": 1
+            }';
+
+
+            $response = new JsonResponse();
+            $response->setStatusCode('500');
+            $response->setContent($error_msg);
+            return $response;
+        }
+
+        $logger->debug("Atualizando informações para o computador com IP = $host\n".$status);
+
+
+        // Primeiro procura computador pelo MAC
+        if (!empty($dados['mac_address'])) {
+            $computador = $em->getRepository("CocarBundle:Computador")->findOneBy(array(
+                'mac_address' => $dados['mac_address']
+            ));
+
+            if (empty($computador)) {
+                // Ve se ja existe um de mesmo IP cadastrado
+                $computador = $em->getRepository("CocarBundle:Computador")->findOneBy(array(
+                    'host' => $dados['host']
+                ));
+
+                if (empty($computador)) {
+                    // Cria o computador
+                    $computador = new Computador();
+                }
+            }
+        }
+
+        // Se tudo deu certo, retorna
+        $response = new JsonResponse();
+        $response->setStatusCode('200');
+        return $response;
     }
 
 } 
