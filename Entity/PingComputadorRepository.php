@@ -12,4 +12,25 @@ use Doctrine\ORM\EntityRepository;
  */
 class PingComputadorRepository extends EntityRepository
 {
+    /**
+     * Todas as entradas de ping
+     *
+     * @param $start \DateTime Data de início
+     * @param $end \DateTime Data de fim
+     * @return mixed
+     */
+    public function relatorioGeral($start, $end) {
+        $qb = $this->createQueryBuilder('p')
+            ->select(
+                'max(p.date) as last_ping',
+                'c'
+            )
+            ->innerJoin("CocarBundle:Computador", "c", "WITH", "c.id = p.computador")
+            ->andWhere("p.date BETWEEN :start AND :end")
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->groupBy('c');
+
+        return $qb->getQuery()->execute();
+    }
 }

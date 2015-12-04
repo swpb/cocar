@@ -389,6 +389,13 @@ class Computador
     }
 
     /**
+     * @return string
+     */
+    public function getSoOsFamily() {
+        return $this->so_os_family;
+    }
+
+    /**
      * @param $so_type
      * @return $this
      */

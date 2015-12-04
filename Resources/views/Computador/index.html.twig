@@ -1,0 +1,120 @@
+{% extends 'CocarBundle::layout.html.twig' %}
+
+{% block main -%}
+    <h2 class="general-title">{{ "Computadores Cadastrados"|trans }}</h2>
+    <center>
+        <ul>
+            <li>
+                <form action="{{ path('computador_index') }}" method="get" {{ form_enctype(form) }}>
+                    {{ form_errors(form) }}
+                    {{ form_widget(form.startDate) }}
+                    {{ form_widget(form.endDate) }}
+                    <button type="submit">{{ "Filtrar data"|trans }}</button>
+                    <br>
+                    {#<button type="submit" formaction="{{ path('printer_csv') }}">{{ "Gerar CSV"|trans }}</button>
+                    <button type="submit" formaction="{{ path('printer_index_detalhado') }}">{{ "Relatório detalhado"|trans }}</button>
+                    <button type="submit" formaction="{{ path('printer_models_index') }}" title="{{ 'Cadastrar modelos'| trans }}" formtarget="_blank" class="button">{{ 'Modelos de impressora'|trans }}</button>
+                    <button type="submit" formaction="{{ path('printer_inactive_index') }}" title="{{ 'Verificar impressoras inativas'| trans }}" formtarget="_blank" class="button">{{ 'Impressoras inativas'|trans }}</button>#}
+                </form>
+
+            </li>
+        </ul>
+    </center>
+    <br>
+    <div class="row-fluid">
+        <div class="span12 flat_box">
+            <div class="padding_20">
+                <p>{{ "Relatório gerado em"|trans }} {{ data|date }}</p>
+                <br>
+                <p>
+                    <ul>
+                        <li><b>{{ "Data Inicial"|trans }}</b>: {{ start|date("d/m/Y") }} {{ "00:00" }}</li>
+                        <li><b>{{ "Data Final"|trans }}</b>: {{ end|date("d/m/Y") }} {{ "23:59" }}</li>
+                    </ul>
+                </p>
+                <br>
+                <p>Total de computadores: <b>{{ ping|length }}</b></p>
+            </div>
+        </div>
+    </div>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Último Ping</th>
+                <th>Host</th>
+                <th>MAC</th>
+                <th>Ativo</th>
+                <th>SO</th>
+                <th>Versão SO</th>
+                <th>% SO</th>
+                <th>Vendor SO</th>
+                <th>Família SO</th>
+                <th>Tipo SO</th>
+                <th>CPE SO</th>
+                <th>Cacic</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in ping %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ entity.last_ping|date }}</td>
+                <td>{{ entity[0].host }}</td>
+                <td>{{ entity[0].macAddress }}</td>
+                <td>{{ entity[0].active }}</td>
+                <td>{{ entity[0].soName }}</td>
+                <td>{{ entity[0].soVersion }}</td>
+                <td>{{ entity[0].accuracy }}</td>
+                <td>{{ entity[0].soVendor }}</td>
+                <td>{{ entity[0].soOsFamily }}</td>
+                <td>{{ entity[0].soType }}</td>
+                <td>{{ entity[0].soCpe }}</td>
+                {% if entity[0].cacicId %}
+                    <td>
+                        <a href="{{ path('cacic_computador_detalhar', {'idComputador' : entity[0].cacicId }) }}" title="{{ 'Detalhar computador'|trans }}" target="_blank">
+                            <i class="icon-search"></i>
+                        </a>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $( "#printers").submit(function( event ){
+
+            // Stop form from submitting normally
+            event.preventDefault();
+
+            //var form = $( this );
+            var postData = $(this).serializeArray();
+            var formURL = $(this).attr("action");
+            //var formData = new FormData($('form')[1]);
+            $.ajax({
+                type: "POST",
+                url: formURL,
+                data: postData,
+                //processData: false,
+                //contentType: false,
+                success: function(){
+                    location.reload();
+                },
+                error: function(){
+                    location.reload();
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
