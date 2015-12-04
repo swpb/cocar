@@ -36,7 +36,7 @@ class PingComputador
     /**
      * @var integer
      *
-     * @ORM\Column(name="date", type="integer")
+     * @ORM\Column(name="date", type="datetime")
      */
     private $date;
 
@@ -53,7 +53,7 @@ class PingComputador
     /**
      * Set date
      *
-     * @param integer $date
+     * @param \DateTime $date
      * @return PrinterCounter
      */
     public function setDate($date)
@@ -66,7 +66,7 @@ class PingComputador
     /**
      * Get date
      *
-     * @return integer 
+     * @return \DateTime
      */
     public function getDate()
     {

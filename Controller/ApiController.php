@@ -8,6 +8,7 @@
 
 namespace Swpb\Bundle\CocarBundle\Controller;
 
+use Swpb\Bundle\CocarBundle\Entity\PingComputador;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -272,17 +273,100 @@ class ApiController extends Controller {
                 'mac_address' => $dados['mac_address']
             ));
 
+            // Ve se ja existe um de mesmo IP cadastrado
+            $computador_ip = $em->getRepository("CocarBundle:Computador")->findOneBy(array(
+                'host' => $dados['host']
+            ));
+
+            if (empty($computador) && empty($computador_ip)) {
+                // Nao achei nem pelo MAC nem pelo IP. Cria um computador
+                $logger->debug("Adicionando computador com IP = " . $dados['host'] . " e MAC = " . $dados['mac_address']);
+                $computador = new Computador();
+            } elseif (empty($computador) && !empty($computador_ip)) {
+                // Nao achei pelo MAC, mas achei pelo IP. Considera esse
+                $computador = $computador_ip;
+            } elseif (!empty($computador_ip))  {
+                // Aqui o MAC não é vazio nem o IP. Verifica se é uma atualização de MAC
+                $ip_old = $computador_ip->getHost();
+                $ip = $computador->getHost();
+                if ($ip != $ip_old) {
+                    $logger->debug("Atualização de IP. Adicionando MAC ". $dados['mac_address']." para o IP $ip. Removendo MAc do IP $ip_old");
+                    // O MAC mudou de IP. O IP velho fica sem MAC
+                    $computador_ip->setMacAddress(null);
+                    $em->persist($computador_ip);
+                }
+            } else {
+                // Para todos os outros casos considero somente o MAC atual. Não precisa fazer nada
+            }
+
+        } else {
+            $computador = $em->getRepository("CocarBundle:Computador")->findOneBy(array(
+                'host' => $dados['host']
+            ));
+
             if (empty($computador)) {
-                // Ve se ja existe um de mesmo IP cadastrado
-                $computador = $em->getRepository("CocarBundle:Computador")->findOneBy(array(
-                    'host' => $dados['host']
+                // Cria o computador
+                $computador = new Computador();
+            }
+        }
+
+        // Adiciona informações da coleta
+        $computador->setHost($dados['host']);
+        $computador->setMacAddress($dados['mac_address']);
+        $computador->setLocal($dados['local']);
+        $computador->setName($dados['name']);
+        $computador->setNetmask($dados['netmask']);
+        $computador->setAccuracy($dados['accuracy']);
+        $computador->setSoCpe($dados['so_cpe']);
+        $computador->setSoName($dados['so_name']);
+        $computador->setSoOsFamily($dados['so_os_family']);
+        $computador->setSoType($dados['so_type']);
+        $computador->setSoVendor($dados['so_vendor']);
+        $computador->setSoVersion($dados['so_version']);
+
+        // Verifica se o Cacic esta instalado e procura o computador
+        $cacic = $this->container->get('kernel')->getBundle('CacicCommonBundle');
+        if (!empty($cacic)) {
+            $cacic_id = $computador->getCacicId();
+            if (empty($cacic_id)) {
+                // Procura primeiro pelo MAC
+                $cacic_comp = $em->getRepository("CacicCommonBundle:Computador")->findOneBy(array(
+                    'teNodeAddress' => $computador->getMacAddress()
                 ));
 
-                if (empty($computador)) {
-                    // Cria o computador
-                    $computador = new Computador();
+                if (empty($cacic_comp)) {
+                    $cacic_comp = $em->getRepository("CacicCommonBundle:Computador")->findOneBy(array(
+                        'teIpComputador' => $computador->getHost()
+                    ));
                 }
+
+                if (!empty($cacic_comp)) {
+                    // Vê se o computador é considerado ativo no Cacic
+                    $computador->setCacicId($cacic_comp->getIdComputador());
+                    $computador->setActive($cacic_comp->getAtivo());
+                }
+            } else {
+                $cacic_comp = $em->getRepository("CacicCommonBundle:Computador")->find($cacic_id);
+                $computador->setActive($cacic_comp->getAtivo());
             }
+        }
+
+        // Registra o ping
+        $ping = new PingComputador();
+        $ping->setComputador($computador);
+        $ping_date = new \DateTime($dados['ping_date']);
+        $ping->setDate($ping_date);
+
+        // Persiste as informações
+        try {
+            $em->persist($computador);
+            $em->flush();
+            $em->persist($ping);
+            $em->flush();
+        } catch (\Exception $e) {
+            // Ainda assim retorna como sucesso
+            $logger->error("Entrada repetida para computador ".$dados['host'] . " na data ".$dados['ping_date']);
+            $logger->error($e->getMessage());
         }
 
         // Se tudo deu certo, retorna
