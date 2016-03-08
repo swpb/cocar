@@ -20,6 +20,11 @@ class PingComputadorRepository extends EntityRepository
      * @return mixed
      */
     public function relatorioGeral($start, $end) {
+        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+        $start = new \DateTime(date("Y-m-d", $start));
+        $end   = isset($end) ? $end : time();
+        $end = new \DateTime(date("Y-m-d", $end));
+
         $qb = $this->createQueryBuilder('p')
             ->select(
                 'max(p.date) as last_ping',
