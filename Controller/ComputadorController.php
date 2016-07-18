@@ -44,13 +44,13 @@ class ComputadorController extends Controller
 
             $end = new \DateTime($form['endDate']);
             $end->setTime('23', '59', '59');
+        } else {
+
+                $start = isset($start) ? $start : (time() - ((60*60*24)*30));
+                $start = new \DateTime(date("Y-m-d", $start));
+                $end   = isset($end) ? $end : time();
+                $end = new \DateTime(date("Y-m-d", $end));
         }
-
-        $start = isset($start) ? $start : (time() - ((60*60*24)*30));
-        $start = new \DateTime(date("Y-m-d", $start));
-        $end   = isset($end) ? $end : time();
-        $end = new \DateTime(date("Y-m-d", $end));
-
         $data = new \DateTime();
 
         $ping = $em->getRepository('CocarBundle:PingComputador')->relatorioGeral($start, $end);
