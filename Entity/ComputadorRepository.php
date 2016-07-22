@@ -25,7 +25,7 @@ class ComputadorRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('c')
             ->select("count(DISTINCT c.id)")
-            ->innerJoin("CocarBundle:PingComputador", "p")
+            ->innerJoin('CocarBundle:PingComputador', 'p', 'WITH', 'p.computador = c.id')
             ->andWhere("c.cacic_id is null")
             ->andWhere("p.date BETWEEN :start AND :end")
             ->setParameter("start", $start)
@@ -47,7 +47,7 @@ class ComputadorRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('c')
             ->select("count(DISTINCT c.id)")
-            ->innerJoin("CocarBundle:PingComputador", "p")
+            ->innerJoin('CocarBundle:PingComputador', 'p', 'WITH', 'p.computador = c.id')
             ->andWhere("p.date BETWEEN :start AND :end")
             ->setParameter("start", $start)
             ->setParameter("end", $end);
